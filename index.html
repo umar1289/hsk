@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#f6f4ef">
+<title>HSK 1 — takrorlash</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f4ef;--card:#fff;--ink:#1d1c1a;--mut:#77736b;--line:#e5e1d8;--red:#c8372d;--green:#2f8a57;--soft:#efebe3}
+html.dark{--bg:#161514;--card:#211f1d;--ink:#f1eee8;--mut:#9b968d;--line:#34312d;--soft:#2a2825}
+@media (prefers-color-scheme:dark){:root{--bg:#161514;--card:#211f1d;--ink:#f1eee8;--mut:#9b968d;--line:#34312d;--soft:#2a2825}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:560px;margin:0 auto;padding:16px 16px 40px}
+header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px}
+h1{font-size:18px;margin:0;font-weight:700;letter-spacing:-.01em}
+h1 span{color:var(--red)}
+.tabs{display:flex;gap:4px;background:var(--soft);padding:3px;border-radius:10px}
+.tabs button{border:0;background:none;color:var(--mut);font:500 13px Inter,sans-serif;padding:7px 11px;border-radius:8px;cursor:pointer}
+.tabs button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+select,input[type=search]{font:500 14px Inter,sans-serif;padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:var(--card);color:var(--ink)}
+select{flex:1;min-width:0}
+.chip{font:500 13px Inter,sans-serif;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 11px;border-radius:999px;cursor:pointer;user-select:none}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.bar{height:6px;background:var(--soft);border-radius:9px;overflow:hidden;margin:4px 0 6px}
+.bar i{display:block;height:100%;background:var(--green);width:0;transition:width .3s}
+.meta{display:flex;justify-content:space-between;font-size:12px;color:var(--mut);margin-bottom:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;min-height:340px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 20px;text-align:center;cursor:pointer;position:relative;box-shadow:0 2px 10px rgba(0,0,0,.04)}
+.hz{font-family:"Noto Sans SC",sans-serif;font-weight:500;font-size:88px;line-height:1.15;word-break:keep-all}
+.hz.long{font-size:64px}.hz.xl{font-size:50px}
+.py{font-size:26px;color:var(--red);font-weight:500;margin-top:10px;min-height:32px}
+.uz{font-size:20px;margin-top:8px;font-weight:600;line-height:1.35}
+.uz.big{font-size:28px}
+.hint{position:absolute;bottom:14px;font-size:12px;color:var(--mut)}
+.hidden{visibility:hidden}
+.say{position:absolute;top:12px;right:12px;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:50%;width:40px;height:40px;font-size:18px;cursor:pointer}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.btns button{font:600 16px Inter,sans-serif;padding:16px;border-radius:14px;border:0;cursor:pointer;color:#fff}
+.no{background:var(--red)}.yes{background:var(--green)}
+.btns button:disabled{opacity:.35;cursor:default}
+.done{text-align:center;padding:40px 10px}
+.done .big{font-size:44px;font-weight:700}
+.prim{font:600 15px Inter,sans-serif;padding:13px 18px;border-radius:12px;border:0;background:var(--ink);color:var(--bg);cursor:pointer;margin:6px}
+.sec{background:var(--soft);color:var(--ink)}
+.list{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.li{display:grid;grid-template-columns:86px 1fr auto;gap:10px;align-items:center;padding:10px 12px;border-bottom:1px solid var(--line)}
+.li:last-child{border:0}
+.li .h{font-family:"Noto Sans SC",sans-serif;font-size:24px}
+.li .p{color:var(--red);font-size:13px}.li .u{font-size:14px}
+.st{font-size:11px;padding:3px 7px;border-radius:99px;background:var(--soft);color:var(--mut);white-space:nowrap}
+.st.k{background:#e3f3ea;color:#22704a}.st.d{background:#fbe6e3;color:#a32b22}
+@media (prefers-color-scheme:dark){.st.k{background:#1f3a2a;color:#7fd3a3}.st.d{background:#46201c;color:#f0a198}}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.stats div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+.stats b{display:block;font-size:22px}.stats span{font-size:12px;color:var(--mut)}
+.ltitle{margin:2px 0 10px;font-size:14px;line-height:1.5}.lt-n{font-weight:700;color:var(--red)}.lt-h{font-family:'Noto Sans SC',sans-serif;font-size:16px;margin:0 4px}.lt-u{color:var(--mut)}
+.lh{background:var(--soft);font-size:13px;font-weight:600;padding:9px 12px;border-bottom:1px solid var(--line)}
+.li .h sup{font-size:10px;color:var(--mut)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--red);color:#fff;font:600 14px Inter,sans-serif;padding:10px 16px;border-radius:999px;opacity:0;transition:.2s;pointer-events:none;z-index:9}.toast.ok{background:var(--green)}.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.tip{font-size:12px;color:var(--mut);text-align:center;margin-top:14px;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><h1>新HSK教程 <span>1</span> · takrorlash</h1>
+<div class="tabs"><button id="tStudy" class="on">Kartalar</button><button id="tList">Ro'yxat</button></div></header>
+
+<section id="study">
+  <div class="row">
+    <select id="set"></select>
+  </div>
+  <div class="row">
+    <span class="chip" id="mHz">汉 → o'zbekcha</span>
+    <span class="chip" id="mUz">O'zbekcha → 汉</span>
+    <span class="chip" id="cPy">Pinyin oldindan</span>
+    <span class="chip" id="cSh">Aralashtirish</span>
+  </div>
+  <div id="ltitle" class="ltitle"></div>
+  <div class="bar"><i id="prog"></i></div>
+  <div class="meta"><span id="left"></span><span id="score"></span></div>
+  <div id="stage"></div>
+  <div id="toast" class="toast"></div>
+  <p class="tip" id="nostore" style="display:none;color:var(--red)">Bu brauzer natijalarni saqlashga ruxsat bermayapti — sahifani yopsangiz, belgilar yo'qoladi.</p>
+  <p class="tip">Kartani bosing yoki <b>Space</b> — javobni ko'rish · <b>1</b> bilmayman · <b>2</b> bilaman.<br>"Bilmayman" — so'z "Qiyin so'zlar"ga tushadi (darsda qayta chiqmaydi). U yerdan faqat "Qiyin so'zlar" to'plamida "Bilaman"ni bossangiz chiqadi. ★ — kitobdagi, lekin HSK 1 imtihonidan tashqari so'z.</p>
+</section>
+
+<section id="listv" style="display:none">
+  <div class="stats"><div><b id="sK">0</b><span>Bilaman</span></div><div><b id="sD">0</b><span>Qiyin</span></div><div><b id="sN">0</b><span>Ko'rilmagan</span></div></div>
+  <div class="row"><input type="search" id="q" placeholder="Qidirish: 汉字, pinyin yoki o'zbekcha" style="flex:1"></div>
+  <div class="row"><span class="chip on" data-f="all">Hammasi</span><span class="chip" data-f="d">Qiyin</span><span class="chip" data-f="k">Bilaman</span><span class="chip" data-f="n">Ko'rilmagan</span></div>
+  <div class="list" id="list"></div>
+  <p class="tip"><button class="prim sec" id="reset">Natijalarni tozalash</button></p>
+</section>
+</div>
+
+<script>
+const W=[["不客气","bú kèqi","arzimaydi",1,0,"1"],["大家","dàjiā","hamma, barcha",1,0,"1"],["好","hǎo","yaxshi",1,0,"1"],["老师","lǎoshī","o'qituvchi",1,0,"1"],["们","men","-lar (ko'plik)",1,0,"1"],["你好","nǐ hǎo","salom",1,0,"1"],["你们","nǐmen","sizlar",1,0,"1"],["您","nín","Siz (hurmat)",1,0,"1"],["同学","tóngxué","sinfdosh, kursdosh",1,0,"1"],["谢谢","xièxie","rahmat",1,0,"1"],["学生","xuésheng","o'quvchi, talaba",1,0,"1"],["再见","zàijiàn","xayr",1,0,"1"],["不","bù","yo'q; emas",2,0,"2"],["对不起","duìbuqǐ","kechirasiz",2,0,"2"],["高兴","gāoxìng","xursand",2,0,"2"],["很","hěn","juda",2,0,"2"],["叫","jiào","ismi ...; chaqirmoq",2,0,"2"],["没关系","méi guānxi","hechqisi yo'q",2,0,"2"],["没事","méishì","hechqisi yo'q",2,0,"2"],["名字","míngzi","ism",2,0,"2"],["你","nǐ","sen, siz",2,0,"2"],["请问","qǐngwèn","kechirasiz, so'rasam...",2,0,"2"],["认识","rènshi","tanimoq",2,0,"2"],["什么","shénme","nima",2,0,"2"],["是","shì","...dir; bo'lmoq",2,0,"2"],["我","wǒ","men",2,0,"2"],["也","yě","ham",2,0,"2"],["的","de","-ning (qaratqich yuklama)",3,0,"3"],["对","duì","to'g'ri; -ga nisbatan",3,0,"3, 11"],["工作","gōngzuò","ish; ishlamoq",3,0,"3, 8"],["国","guó","mamlakat",3,0,"3"],["还","hái","yana; hali",3,0,"3"],["姐姐","jiějie","opa",3,0,"3"],["吗","ma","-mi? (so'roq yuklama)",3,0,"3"],["忙","máng","band",3,0,"3"],["哪","nǎ","qaysi",3,0,"3"],["女朋友","nǚpéngyou","qiz do'st (sevgan)",3,0,"3"],["人","rén","odam, kishi",3,0,"3"],["谁","shéi/shuí","kim",3,0,"3"],["她","tā","u (ayol)",3,0,"3"],["太","tài","juda, haddan tashqari",3,0,"3"],["喂","wèi","allo (telefonda)",3,0,"3"],["我们","wǒmen","biz",3,0,"3"],["想","xiǎng","o'ylamoq; xohlamoq; sog'inmoq",3,0,"3, 6"],["这","zhè","bu",3,0,"3"],["法国","Fǎguó","Fransiya",3,0,"3"],["泰国","Tàiguó","Tailand",3,0,"3"],["中国","Zhōngguó","Xitoy",3,0,"3"],["中文","Zhōngwén","xitoy tili",3,0,"3"],["八","bā","sakkiz",4,0,"4"],["爸爸","bàba","ota, dada",4,0,"4"],["百","bǎi","yuz (100)",4,0,"4"],["大","dà","katta; (yoshi) katta",4,0,"4, 8"],["多","duō","ko'p; qancha",4,0,"4, 8"],["多少","duōshao","qancha, nechta",4,0,"4"],["儿子","érzi","o'g'il",4,0,"4"],["二","èr","ikki",4,0,"4"],["哥哥","gēge","aka",4,0,"4"],["个","gè","dona (umumiy hisob so'zi)",4,0,"4"],["孩子","háizi","bola, farzand",4,0,"4"],["和","hé","va; bilan",4,0,"4, 9"],["几","jǐ","nechta; bir necha",4,0,"4, 15"],["家","jiā","uy; oila",4,0,"4, 7, 9"],["今年","jīnnián","bu yil",4,0,"4"],["九","jiǔ","to'qqiz",4,0,"4"],["口","kǒu","jon (oila a'zolari hisobi)",4,0,"4"],["两","liǎng","ikki (sanoqda)",4,0,"4"],["零","líng","nol",4,0,"4"],["六","liù","olti",4,0,"4"],["妈妈","māma","ona, oyi",4,0,"4"],["没有","méiyǒu","yo'q; ...magan",4,0,"4"],["妹妹","mèimei","singil",4,0,"4"],["呢","ne","-chi? (so'roq yuklama)",4,0,"4, 7"],["女儿","nǚ'ér","qiz (farzand)",4,0,"4"],["七","qī","yetti",4,0,"4"],["千","qiān","ming (1000)",4,0,"4"],["三","sān","uch",4,0,"4"],["十","shí","o'n",4,0,"4"],["四","sì","to'rt",4,0,"4"],["岁","suì","yosh",4,0,"4"],["他","tā","u (erkak)",4,0,"4"],["五","wǔ","besh",4,0,"4"],["一","yī","bir",4,0,"4"],["有","yǒu","bor; ega bo'lmoq",4,0,"4"],["菜","cài","taom; sabzavot",5,0,"5, 7"],["电脑","diànnǎo","kompyuter",5,0,"5"],["好看","hǎokàn","chiroyli",5,0,"5"],["号","hào","sana (kun); raqam",5,0,"5, 6"],["会","huì","qila olmoq (o'rganib)",5,0,"5"],["饺子","jiǎozi","chuchvara",5,0,"5"],["今天","jīntiān","bugun",5,0,"5"],["面条儿","miàntiáor","lag'mon, ugra",5,0,"5"],["日","rì","kun; sana",5,0,"5"],["它","tā","u (hayvon/narsa)",5,0,"5"],["喜欢","xǐhuan","yoqtirmoq",5,0,"5"],["下班","xiàbān","ishdan chiqmoq",5,0,"5"],["新","xīn","yangi",5,0,"5"],["星期","xīngqī","hafta",5,0,"5"],["星期日","xīngqīrì","yakshanba",5,0,"5"],["星期天","xīngqītiān","yakshanba",5,0,"5"],["休息","xiūxi","dam olmoq",5,0,"5"],["一些","yìxiē","bir oz; ba'zi",5,0,"5"],["月","yuè","oy",5,0,"5"],["真","zhēn","haqiqatan, rostdan",5,0,"5"],["做","zuò","qilmoq",5,0,"5, 9"],["做饭","zuò fàn","ovqat pishirmoq",5,0,"5"],["包子","bāozi","baozi (bug'da pishgan somsa)",6,0,"6"],["超市","chāoshì","supermarket",6,0,"6"],["吃","chī","yemoq",6,0,"6"],["出租车","chūzūchē","taksi",6,0,"6"],["电话","diànhuà","telefon",6,0,"6"],["东西","dōngxi","narsa, buyum",6,0,"6"],["非常","fēicháng","juda, nihoyatda",6,0,"6"],["好吃","hǎochī","mazali",6,0,"6"],["买","mǎi","sotib olmoq",6,0,"6"],["米饭","mǐfàn","guruch (osh)",6,0,"6"],["明天","míngtiān","ertaga",6,0,"6"],["哪儿","nǎr","qayer",6,0,"6"],["那边","nàbiān","u tomonda",6,0,"6"],["牛奶","niúnǎi","sut",6,0,"6"],["去","qù","bormoq",6,0,"6"],["手机","shǒujī","mobil telefon",6,0,"6"],["晚饭","wǎnfàn","kechki ovqat",6,0,"6"],["些","xiē","bir nechta, ba'zi",6,0,"6"],["怎么","zěnme","qanday; nega",6,0,"6"],["坐","zuò","o'tirmoq; (transportda) bormoq",6,0,"6, 13"],["吧","ba","-chi; qani (taklif yuklamasi)",7,0,"7"],["半","bàn","yarim",7,0,"7"],["点","diǎn","soat (vaqt)",7,0,"7"],["电影","diànyǐng","kino",7,0,"7"],["电影院","diànyǐngyuàn","kinoteatr",7,0,"7"],["店","diàn","do'kon",7,0,"7"],["分","fēn","daqiqa",7,0,"7"],["分钟","fēnzhōng","daqiqa (davomiylik)",7,0,"7"],["后","hòu","keyin; orqa",7,0,"7"],["见","jiàn","ko'rmoq; uchrashmoq",7,0,"7"],["看","kàn","qaramoq; ko'rmoq",7,0,"7"],["课","kè","dars",7,0,"7"],["里","li/lǐ","ichida",7,0,"7"],["上班","shàngbān","ishga bormoq",7,0,"7"],["上课","shàngkè","darsga kirmoq",7,0,"7"],["上午","shàngwǔ","tushgacha (ertalab)",7,0,"7"],["事","shì","ish; voqea",7,0,"7"],["晚上","wǎnshang","kechqurun",7,0,"7"],["下课","xiàkè","dars tugamoq",7,0,"7"],["下午","xiàwǔ","tushdan keyin",7,0,"7"],["现在","xiànzài","hozir",7,0,"7"],["医院","yīyuàn","kasalxona",7,0,"7"],["在","zài","-da; ...yapti",7,0,"7, 8, 11"],["早上","zǎoshang","ertalab",7,0,"7"],["病人","bìngrén","bemor",8,1,"8"],["到","dào","-gacha; yetib kelmoq",8,0,"8"],["饭","fàn","ovqat",8,0,"8"],["房间","fángjiān","xona",8,0,"8"],["看见","kànjiàn","ko'rmoq",8,0,"8"],["猫","māo","mushuk",8,0,"8"],["没","méi","yo'q; ...magan",8,0,"8"],["能","néng","qila olmoq (imkoniyat)",8,0,"8"],["漂亮","piàoliang","chiroyli",8,0,"8"],["前","qián","old; oldin",8,0,"8"],["书店","shūdiàn","kitob do'koni",8,0,"8"],["外","wài","tashqari",8,0,"8"],["午饭","wǔfàn","tushlik",8,0,"8"],["下","xià","past; tushmoq; keyingi",8,0,"8, 12"],["小","xiǎo","kichik",8,0,"8"],["学校","xuéxiào","maktab",8,0,"8"],["医生","yīshēng","shifokor",8,0,"8"],["只","zhī","dona (hayvon hisob so'zi)",8,0,"8"],["桌子","zhuōzi","stol",8,0,"8"],["白天","báitiān","kunduzi",9,0,"9"],["本","běn","kitob/daftar hisob so'zi",9,0,"9"],["边","bian/biān","tomon, chet",9,0,"9"],["唱","chàng","kuylamoq",9,0,"9"],["第","dì","-inchi (tartib son)",9,0,"9"],["电视","diànshì","televizor",9,0,"9"],["读书","dúshū","kitob o'qimoq",9,0,"9"],["歌","gē","qo'shiq",9,0,"9"],["狗","gǒu","it",9,0,"9"],["好听","hǎotīng","yoqimli (eshitishga)",9,0,"9"],["那","nà","u, ana u",9,0,"9, 15"],["那个","nàge","ana u",9,0,"9"],["朋友","péngyou","do'st",9,0,"9"],["前边","qiánbian","old tomon",9,0,"9"],["上","shang/shàng","ust; chiqmoq; oldingi",9,0,"9, 14"],["书","shū","kitob",9,0,"9"],["外边","wàibian","tashqari",9,0,"9"],["玩","wán","o'ynamoq",9,0,"9"],["学习","xuéxí","o'qimoq, o'rganmoq",9,0,"9"],["椅子","yǐzi","stul",9,0,"9"],["杯子","bēizi","stakan, piyola",10,0,"10"],["穿","chuān","kiymoq",10,0,"10"],["贵","guì","qimmat",10,0,"10"],["件","jiàn","dona (kiyim hisob so'zi)",10,0,"10"],["斤","jīn","jin (yarim kilo)",10,1,"10"],["块","kuài","yuan (og'zaki)",10,0,"10"],["那儿","nàr","u yer",10,0,"10"],["那些","nàxiē","ana ular",10,0,"10"],["男","nán","erkak",10,0,"10"],["女","nǚ","ayol",10,0,"10"],["便宜","piányi","arzon",10,0,"10"],["苹果","píngguǒ","olma",10,0,"10"],["钱","qián","pul",10,0,"10"],["商店","shāngdiàn","do'kon",10,0,"10"],["少","shǎo","kam",10,0,"10"],["售货员","shòuhuòyuán","sotuvchi",10,1,"10"],["水果","shuǐguǒ","meva",10,0,"10"],["衣服","yīfu","kiyim",10,0,"10"],["元","yuán","yuan",10,0,"10"],["怎么样","zěnmeyàng","qanday? qalay?",10,0,"10"],["这边","zhèbiān","bu tomonda",10,0,"10"],["这儿","zhèr","bu yer",10,0,"10"],["这些","zhèxiē","bular",10,0,"10"],["车","chē","mashina",11,0,"11"],["大学","dàxué","universitet",11,0,"11"],["大学生","dàxuéshēng","talaba",11,0,"11"],["弟弟","dìdi","uka",11,0,"11"],["读","dú","o'qimoq (o'qishda o'qimoq)",11,0,"11"],["饭店","fàndiàn","restoran; mehmonxona",11,0,"11"],["开车","kāichē","mashina haydamoq",11,0,"11"],["哪里","nǎlǐ","qayerda",11,0,"11"],["那里","nàlǐ","u yer",11,0,"11"],["起床","qǐchuáng","o'rindan turmoq",11,0,"11"],["时候","shíhou","payt, vaqt",11,0,"11"],["睡","shuì","uxlamoq",11,0,"11"],["睡觉","shuìjiào","uxlamoq",11,0,"11"],["说","shuō","gapirmoq, aytmoq",11,0,"11"],["问","wèn","so'ramoq",11,0,"11"],["小朋友","xiǎopéngyǒu","bolajon",11,0,"11"],["学","xué","o'rganmoq",11,0,"11"],["要","yào","xohlamoq; kerak; ...moqchi",11,0,"11, 13, 15"],["医","yī","tibbiyot (o'qimoq)",11,1,"11"],["找","zhǎo","qidirmoq",11,0,"11"],["正在","zhèngzài","hozir ...yapti",11,0,"11"],["知道","zhīdào","bilmoq",11,0,"11"],["昨天","zuótiān","kecha",11,0,"11"],["病","bìng","kasallik; kasal bo'lmoq",12,0,"12"],["公司","gōngsī","kompaniya, firma",12,0,"12"],["喝","hē","ichmoq",12,0,"12"],["回","huí","qaytmoq",12,0,"12"],["觉得","juéde","deb o'ylamoq; his qilmoq",12,0,"12"],["看病","kànbìng","shifokorga ko'rinmoq",12,0,"12"],["来","lái","kelmoq",12,0,"12"],["了","le","-di (o'zgarish / tugallanish)",12,0,"12, 14"],["冷","lěng","sovuq",12,0,"12"],["热","rè","issiq",12,0,"12"],["生病","shēngbìng","kasal bo'lmoq",12,0,"12"],["水","shuǐ","suv",12,0,"12"],["天","tiān","kun",12,0,"12"],["天气","tiānqì","ob-havo",12,0,"12"],["下雨","xià yǔ","yomg'ir yog'moq",12,0,"12"],["雪","xuě","qor",12,0,"12"],["药","yào","dori",12,1,"12"],["一点儿","yìdiǎnr","ozgina",12,0,"12"],["有点儿","yǒudiǎnr","biroz (salbiy)",12,0,"12"],["雨","yǔ","yomg'ir",12,0,"12"],["再","zài","yana",12,0,"12, 13"],["这里","zhèlǐ","bu yer",12,0,"12"],["杯","bēi","piyola, stakan (hisob so'zi)",13,0,"13"],["茶","chá","choy",13,0,"13"],["打电话","dǎ diànhuà","qo'ng'iroq qilmoq",13,0,"13"],["服务员","fúwùyuán","ofitsiant",13,1,"13"],["给","gěi","bermoq; -ga",13,0,"13"],["鸡蛋","jīdàn","tuxum",13,0,"13"],["可以","kěyǐ","mumkin; bo'ladi",13,0,"13"],["卖","mài","sotmoq",13,0,"13"],["面包","miànbāo","non",13,0,"13"],["女士","nǚshì","xonim",13,0,"13"],["请","qǐng","iltimos; taklif qilmoq",13,0,"13"],["问题","wèntí","savol; muammo",13,0,"13"],["先生","xiānsheng","janob",13,0,"13"],["一半","yíbàn","yarmi",13,0,"13"],["一下","yíxià","bir (ko'rib qo'ymoq)",13,0,"13"],["早饭","zǎofàn","nonushta",13,0,"13"],["这个","zhège","bu",13,0,"13"],["不要","búyào","...ma (kerak emas)",14,0,"14"],["都","dōu","hammasi; barchasi",14,0,"14"],["火车","huǒchē","poyezd",14,0,"14"],["开","kāi","ochmoq; haydamoq",14,0,"14"],["明年","míngnián","kelasi yil",14,0,"14"],["哪些","nǎxiē","qaysilar",14,0,"14"],["上学","shàngxué","maktabga bormoq",14,0,"14"],["说话","shuōhuà","gaplashmoq",14,0,"14"],["他们","tāmen","ular",14,0,"14"],["它们","tāmen","ular (hayvon/narsa)",14,0,"14"],["她们","tāmen","ular (ayollar)",14,0,"14"],["听","tīng","tinglamoq",14,0,"14"],["听见","tīngjiàn","eshitmoq",14,0,"14"],["晚","wǎn","kech",14,0,"14"],["小学","xiǎoxué","boshlang'ich maktab",14,0,"14"],["小学生","xiǎoxuéshēng","boshlang'ich sinf o'quvchisi",14,0,"14"],["写","xiě","yozmoq",14,0,"14"],["有的","yǒude","ba'zilari",14,0,"14"],["有些","yǒuxiē","ba'zi; biroz",14,0,"14"],["中午","zhōngwǔ","tush payti",14,0,"14"],["中学","zhōngxué","o'rta maktab",14,0,"14"],["中学生","zhōngxuéshēng","o'rta maktab o'quvchisi",14,0,"14"],["字","zì","ieroglif, harf",14,0,"14"],["汉语","Hànyǔ","xitoy tili",14,0,"14"],["汉字","Hànzì","xitoy ieroglifi",14,0,"14"],["爱","ài","sevmoq; yoqtirmoq",15,0,"15"],["飞机","fēijī","samolyot",15,0,"15"],["好玩儿","hǎowánr","qiziqarli",15,0,"15"],["机场","jīchǎng","aeroport",15,1,"15"],["家人","jiārén","oila a'zolari",15,0,"15"],["接","jiē","kutib olmoq",15,1,"15"],["哪个","nǎge","qaysi biri",15,0,"15"],["男朋友","nánpéngyou","yigit (sevgan)",15,0,"15"],["年","nián","yil",15,0,"15"],["去年","qùnián","o'tgan yil",15,0,"15"],["时间","shíjiān","vaqt",15,0,"15"],["小时","xiǎoshí","soat (davomiylik)",15,0,"15"],["早","zǎo","erta",15,0,"15"],["住","zhù","yashamoq; turmoq",15,0,"15"],["北京","Běijīng","Pekin",15,0,"15"],["西安","Xī'ān","Sian (shahar)",15,0,"15"]];
+const T=[["AI小语，你好！", "Salom, AI Syaoyu!"], ["我叫李文", "Mening ismim Li Ven"], ["我是中国人", "Men xitoylikman"], ["我有两个孩子", "Mening ikki farzandim bor"], ["今天我休息", "Bugun dam olaman"], ["你的手机号是多少？", "Telefon raqamingiz qancha?"], ["我晚上六点半下班", "Kechqurun 6:30 da ishdan chiqaman"], ["我爸爸也在医院工作", "Dadam ham kasalxonada ishlaydi"], ["我明天上午在学校学习", "Ertaga ertalab maktabda o'qiyman"], ["这儿的苹果真便宜！", "Bu yerda olma juda arzon!"], ["我读大学呢", "Men universitetda o'qiyapman"], ["昨天下雪了", "Kecha qor yog'di"], ["请给我一杯茶", "Menga bir piyola choy bering"], ["我看了一个电影", "Men bitta kino ko'rdim"], ["大兴机场见！", "Dasing aeroportida ko'rishamiz!"]];
+const NL=15;
+let st={};try{st=JSON.parse(localStorage.getItem('hsk1book')||'{}')}catch(e){}
+let opt={mode:'hz',py:false,sh:true,set:'1'};try{Object.assign(opt,JSON.parse(localStorage.getItem('hsk1bookopt')||'{}'))}catch(e){}
+const TG=(window.Telegram&&Telegram.WebApp&&Telegram.WebApp.initData)?Telegram.WebApp:null;
+const CS=TG&&TG.isVersionAtLeast&&TG.isVersionAtLeast('6.9')?TG.CloudStorage:null;
+function packSt(){return W.map(w=>st[w[0]]||'-').join('')}
+function unpackSt(s){const o={};W.forEach((w,i)=>{const c=s[i];if(c==='k'||c==='d')o[w[0]]=c});return o}
+function cloudSave(){if(!CS)return;try{CS.setItem('p',packSt())}catch(e){}}
+let storeOk=true;function save(){cloudSave();try{localStorage.setItem('hsk1book',JSON.stringify(st));localStorage.setItem('hsk1bookopt',JSON.stringify(opt));storeOk=true}catch(e){storeOk=false}const n=document.getElementById('nostore');if(n)n.style.display=storeOk?'none':''}
+const $=id=>document.getElementById(id);
+const sel=$('set');
+function key(i){return W[i][0]}
+function S(i){return st[key(i)]}
+function buildSets(){
+  let h='';
+  for(let l=1;l<=NL;l++){const ix=W.map((w,i)=>i).filter(i=>W[i][3]===l);const k=ix.filter(i=>S(i)==='k').length;
+    h+=`<option value="${l}">${l}-dars · ${T[l-1][1]} · ${k}/${ix.length} ✓</option>`}
+  const d=W.filter((_,i)=>S(i)==='d').length;
+  h+=`<option value="hard">Qiyin so'zlar (${d})</option>`;
+  h+=`<option value="new">Hali ko'rilmaganlar</option><option value="all">Hammasi (${W.length})</option>`;
+  sel.innerHTML=h;sel.value=opt.set;if(!sel.value){sel.value='1';opt.set='1'}
+  showTitle();
+}
+function showTitle(){const l=+opt.set;$('ltitle').innerHTML=l?`<span class="lt-n">${l}-dars</span> <span class="lt-h">${T[l-1][0]}</span> <span class="lt-u">${T[l-1][1]}</span>`:''}
+function idxFor(s){
+  const all=W.map((_,i)=>i);
+  if(s==='all')return all;
+  if(s==='hard')return all.filter(i=>S(i)==='d');
+  if(s==='new')return all.filter(i=>!S(i));
+  return all.filter(i=>W[i][3]===+s);
+}
+let q=[],total=0,ok=0,bad=0,cur=null,shown=false,uniq=0,wrong=new Set();
+function start(){
+  q=idxFor(opt.set);if(opt.sh)q.sort(()=>Math.random()-.5);
+  total=q.length;uniq=q.length;wrong=new Set();ok=0;bad=0;next();
+}
+function hzCls(h){return h.length>=4?'hz xl':h.length===3?'hz long':'hz'}
+function next(){
+  shown=false;cur=q.shift();
+  if(cur===undefined){return finish()}
+  render();
+}
+function render(){
+  const [h,p,u]=W[cur];const s=$('stage');
+  let front,back;
+  if(opt.mode==='hz'){
+    s.innerHTML=`<div class="card" id="card"><button class="say" id="say" title="Eshitish">🔊</button>
+      <div class="${hzCls(h)}">${h}</div>
+      <div class="py ${opt.py||shown?'':'hidden'}">${p}</div>
+      <div class="uz ${shown?'':'hidden'}">${u}</div>
+      <div class="hint">${shown?les(cur):'bosing — javob'}</div></div>`;
+  }else{
+    s.innerHTML=`<div class="card" id="card"><button class="say ${shown?'':'hidden'}" id="say">🔊</button>
+      <div class="uz big">${u}</div>
+      <div class="${hzCls(h)} ${shown?'':'hidden'}" style="margin-top:14px">${h}</div>
+      <div class="py ${shown?'':'hidden'}">${p}</div>
+      <div class="hint">${shown?les(cur):'ieroglifni eslang, keyin bosing'}</div></div>`;
+  }
+  s.insertAdjacentHTML('beforeend',`<div class="btns"><button class="no" id="bNo" ${shown?'':'disabled'}>Bilmayman</button><button class="yes" id="bYes" ${shown?'':'disabled'}>Bilaman</button></div>`);
+  $('card').onclick=e=>{if(e.target.id==='say')return;flip()};
+  $('say').onclick=e=>{e.stopPropagation();speak(h)};
+  $('bNo').onclick=()=>answer(false);$('bYes').onclick=()=>answer(true);
+  const done=total-q.length-1;$('prog').style.width=(total?Math.max(0,done)/total*100:0)+'%';
+  $('left').textContent=`Qoldi: ${q.length+1}`;$('score').textContent=`✓ ${ok}  ·  ✗ ${bad}`;
+}
+function les(i){const w=W[i];return `${w[5].includes(',')?w[5]+'-darslarda':w[5]+'-dars'}${w[4]?' · ★ darajadan tashqari so\'z':''}`}
+function flip(){if(shown)return;shown=true;render();if(opt.mode==='uz')speak(W[cur][0])}
+function answer(y){
+  if(!shown)return;
+  const hardMode=opt.set==='hard';let msg='';
+  if(y){ok++;
+    if(hardMode){st[key(cur)]='k';msg='✓ Qiyin so\'zlardan chiqarildi'}
+    else if(S(cur)!=='d'){st[key(cur)]='k'}}
+  else{bad++;wrong.add(cur);if(S(cur)!=='d'&&!hardMode)msg='＋ Qiyin so\'zlarga qo\'shildi';st[key(cur)]='d'}
+  save();buildSets();toast(msg);next();
+}
+let tt;function toast(m){const e=$('toast');if(!m){e.classList.remove('on');return}e.textContent=m;e.classList.toggle('ok',m[0]==='✓');e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),1400)}
+function finish(){
+  buildSets();
+  const pct=total?Math.round(ok/total*100):0;
+  $('prog').style.width='100%';$('left').textContent='Tugadi';
+  $('stage').innerHTML=total?`<div class="card done" style="cursor:default"><div class="big">${uniq-wrong.size} / ${uniq}</div>
+   <p style="color:var(--mut)">birinchi urinishda bildingiz · ${wrong.size} ta so'z qiyin bo'ldi</p>
+   <div><button class="prim" id="again">Qaytadan</button><button class="prim sec" id="nx">Keyingi dars →</button></div>
+   ${wrong.size?'<div><button class="prim sec" id="hard">Qiyin so\'zlarni takrorlash</button></div>':''}</div>`
+   :`<div class="card done" style="cursor:default"><p>Bu to'plamda so'z yo'q.</p><button class="prim" id="again">Boshqa to'plam tanlang</button></div>`;
+  const a=$('again');if(a)a.onclick=start;
+  const n=$('nx');if(n)n.onclick=()=>{const v=isNaN(+opt.set)||!+opt.set?1:Math.min(+opt.set+1,NL);opt.set=String(v);sel.value=opt.set;save();showTitle();start()};
+  const h=$('hard');if(h)h.onclick=()=>{opt.set='hard';sel.value='hard';save();showTitle();start()};
+}
+let zhVoice=null;
+function pickVoice(){try{const v=speechSynthesis.getVoices();zhVoice=v.find(x=>/zh[-_]CN/i.test(x.lang))||v.find(x=>/^zh/i.test(x.lang))||null}catch(e){}}
+try{pickVoice();speechSynthesis.onvoiceschanged=pickVoice}catch(e){}
+function speak(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='zh-CN';u.rate=.8;if(zhVoice)u.voice=zhVoice;speechSynthesis.speak(u)}catch(e){}}
+function chips(){
+  $('mHz').classList.toggle('on',opt.mode==='hz');$('mUz').classList.toggle('on',opt.mode==='uz');
+  $('cPy').classList.toggle('on',opt.py);$('cSh').classList.toggle('on',opt.sh);
+  $('cPy').style.display=opt.mode==='hz'?'':'none';
+}
+$('mHz').onclick=()=>{opt.mode='hz';chips();save();if(cur!==undefined&&cur!==null)render()};
+$('mUz').onclick=()=>{opt.mode='uz';chips();save();if(cur!==undefined&&cur!==null)render()};
+$('cPy').onclick=()=>{opt.py=!opt.py;chips();save();if(cur!==undefined&&cur!==null)render()};
+$('cSh').onclick=()=>{opt.sh=!opt.sh;chips();save();start()};
+sel.onchange=()=>{opt.set=sel.value;save();showTitle();start()};
+document.addEventListener('keydown',e=>{
+  if($('study').style.display==='none'||e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;
+  if(e.code==='Space'||e.key==='Enter'){e.preventDefault();flip()}
+  else if(e.key==='1'||e.key==='ArrowLeft')answer(false);
+  else if(e.key==='2'||e.key==='ArrowRight')answer(true);
+});
+// list
+let filt='all';
+function drawList(){
+  const s=$('q').value.trim().toLowerCase();
+  const norm=x=>x.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+  const ns=norm(s);
+  let k=0,d=0;W.forEach((_,i)=>{if(S(i)==='k')k++;else if(S(i)==='d')d++});
+  $('sK').textContent=k;$('sD').textContent=d;$('sN').textContent=W.length-k-d;
+  let h='';let c=0;
+  let lastL=0;W.forEach(([hz,p,u,l,star],i)=>{
+    const v=S(i)||'n';if(filt!=='all'&&v!==filt)return;
+    if(s&&!(hz.includes(s)||norm(p).replace(/\s/g,'').includes(ns.replace(/\s/g,''))||u.toLowerCase().includes(s)))return;
+    if(++c>600)return;
+    if(l!==lastL){lastL=l;h+=`<div class="lh">${l}-dars · ${T[l-1][0]} — ${T[l-1][1]}</div>`}
+    h+=`<div class="li" data-i="${i}"><div class="h">${hz}${star?'<sup>★</sup>':''}</div><div><div class="p">${p}</div><div class="u">${u}</div></div><span class="st ${v}">${v==='k'?'bilaman':v==='d'?'qiyin':'—'}</span></div>`;
+  });
+  $('list').innerHTML=h||'<div class="li" style="display:block;color:var(--mut)">Hech narsa topilmadi</div>';
+}
+$('list').onclick=e=>{const r=e.target.closest('.li');if(r&&r.dataset.i)speak(W[r.dataset.i][0])};
+$('q').oninput=drawList;
+document.querySelectorAll('[data-f]').forEach(c=>c.onclick=()=>{filt=c.dataset.f;document.querySelectorAll('[data-f]').forEach(x=>x.classList.toggle('on',x===c));drawList()});
+$('reset').onclick=()=>{const b=$('reset');if(b.dataset.c){st={};save();buildSets();drawList();b.textContent="Natijalarni tozalash";delete b.dataset.c}else{b.dataset.c=1;b.textContent='Ishonchingiz komilmi? Yana bosing'}};
+$('tStudy').onclick=()=>{$('study').style.display='';$('listv').style.display='none';$('tStudy').classList.add('on');$('tList').classList.remove('on');buildSets();sel.value=opt.set};
+$('tList').onclick=()=>{$('study').style.display='none';$('listv').style.display='';$('tList').classList.add('on');$('tStudy').classList.remove('on');drawList()};
+if(TG){try{TG.ready();TG.expand();if(TG.disableVerticalSwipes)TG.disableVerticalSwipes();if(TG.colorScheme==='dark')document.documentElement.classList.add('dark')}catch(e){}}
+buildSets();chips();start();
+if(CS){try{CS.getItem('p',(err,v)=>{if(!err&&v&&v.length===W.length){st=unpackSt(v);try{localStorage.setItem('hsk1book',JSON.stringify(st))}catch(e){}buildSets();if($('listv').style.display!=='none')drawList()}else if(!err){cloudSave()}})}catch(e){}}
+</script>
+</body>
+</html>
