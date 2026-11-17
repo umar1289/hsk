@@ -17,6 +17,10 @@ Xitoy tili kitoblari bo'yicha flashcard va gap mashqlari ilovasi (Telegram Mini 
   - *O'zbekcha → 汉语*: so'z kartochkalaridan xitoycha gapni tuzasiz (ortiqcha so'zlar ham bor);
   - *汉语 → o'zbekcha*: gapni o'qib, tarjimasini eslaysiz;
   - *🎧 Tinglab tuzish*: gapni eshitib, kartochkalardan tuzasiz.
+- **Yozish** — ierogliflarni yozishni o'rganish:
+  - *👀 Ko'rish*: chiziqlar tartibi animatsiyada ko'rsatiladi;
+  - *✍️ Andoza bilan*: kulrang andoza ustidan barmoq/sichqoncha bilan chiziqlarni tartib bilan chizasiz;
+  - *🧠 Yoddan*: andozasiz yozasiz; 0–1 xato — "bilaman", ko'proq — "Yozishda qiyin".
 - **Ro'yxat** — kitobning barcha so'zlari, qidiruv va holat bo'yicha filtr.
 
 Natijalar har bir kitob uchun alohida saqlanadi (brauzerda va Telegram CloudStorage'da).
@@ -36,6 +40,14 @@ O'zgartirgandan keyin:
 python3 tools/build_books.py
 ```
 
+Yangi so'zlar qo'shilganda, ularning ierogliflari uchun yozish ma'lumotlarini yuklab oling:
+
+```bash
+python3 tools/fetch_hanzi.py
+```
+
 Yangi kitob uchun `tools/build_books.py` dagi `BOOKS` ro'yxatiga yozuv qo'shing va `index.html` ga `<script src="books/<id>.js">` qatorini qo'shing.
+
+Yozish mashqi [Hanzi Writer](https://hanziwriter.org) (MIT) kutubxonasidan foydalanadi (`vendor/`). Chiziq ma'lumotlari (`hanzi/`) — [Make Me a Hanzi](https://github.com/skishore/makemeahanzi) loyihasidan (Arphic Public License).
 
 360句 kitobidagi gaplar — kitobning o'z "标准句" ro'yxatidan; 新HSK教程 1 va 2 uchun gaplar har bir darsning so'zlari va grammatikasi asosida tuzilgan.
