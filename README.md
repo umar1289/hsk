@@ -21,6 +21,7 @@ Xitoy tili kitoblari bo'yicha flashcard va gap mashqlari ilovasi (Telegram Mini 
   - *👀 Ko'rish*: chiziqlar tartibi animatsiyada ko'rsatiladi;
   - *✍️ Andoza bilan*: kulrang andoza ustidan barmoq/sichqoncha bilan chiziqlarni tartib bilan chizasiz;
   - *🧠 Yoddan*: andozasiz yozasiz; 0–1 xato — "bilaman", ko'proq — "Yozishda qiyin".
+  - Odatda chiziqlarni **istalgan tartibda** yozish mumkin; *Tartib bilan* tugmasi qat'iy (to'g'ri) chiziq tartibini yoqadi.
 - **Ro'yxat** — kitobning barcha so'zlari, qidiruv va holat bo'yicha filtr.
 
 Natijalar har bir kitob uchun alohida saqlanadi (brauzerda va Telegram CloudStorage'da).

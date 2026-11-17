@@ -97,6 +97,7 @@ select{flex:1;min-width:0}
 .wbox .grid rect{fill:var(--card);stroke:var(--line);stroke-width:1}
 .wbox .grid line{stroke:var(--line);stroke-width:.6;stroke-dasharray:2 2}
 #wtarget{position:absolute;inset:0;touch-action:none}
+#wover{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair}
 #wtarget svg{display:block}
 .wmsg{min-height:22px;font-size:15px;font-weight:600;margin-top:8px}
 .wmsg.ok{color:var(--green)}.wmsg.bad{color:var(--red)}
@@ -148,6 +149,7 @@ select{flex:1;min-width:0}
     <span class="chip" data-wm="see">👀 Ko'rish</span>
     <span class="chip" data-wm="guide">✍️ Andoza bilan</span>
     <span class="chip" data-wm="mem">🧠 Yoddan</span>
+    <span class="chip" id="cWOrd">Tartib bilan</span>
     <span class="chip" id="cWSh">Aralashtirish</span>
   </div>
   <div id="wltitle" class="ltitle"></div>
@@ -317,6 +319,7 @@ function chips(){
   $('cSPy').classList.toggle('on',opt.spy);
   document.querySelectorAll('[data-wm]').forEach(c=>c.classList.toggle('on',c.dataset.wm===opt.wmode));
   $('cWSh').classList.toggle('on',opt.sh);
+  $('cWOrd').classList.toggle('on',!!opt.wstrict);$('cWOrd').style.display=opt.wmode==='see'?'none':'';
 }
 $('mHz').onclick=()=>{opt.mode='hz';chips();save();if(cur!=null)render()};
 $('mUz').onclick=()=>{opt.mode='uz';chips();save();if(cur!=null)render()};
@@ -542,7 +545,91 @@ function wChar(){
     box.onclick=()=>{if(tok===wTok){writer.pauseAnimation();writer.loopCharacterAnimation()}};
   }else startQuiz(tok);
 }
+// ---- erkin tartib: chiziqlarni istalgan tartibda yozish ----
+const charCache={};
+function getChar(c){return charCache[c]||(charCache[c]=new Promise((ok,err)=>loadChar(c,ok,err)))}
+function plen(p){let l=0;for(let i=1;i<p.length;i++)l+=Math.hypot(p[i][0]-p[i-1][0],p[i][1]-p[i-1][1]);return l}
+function resample(p,n){
+  if(p.length===1)return Array(n).fill(p[0]);
+  const L=plen(p),out=[p[0]];let acc=0,j=1;const step=L/(n-1);
+  for(let k=1;k<n-1;k++){
+    const target=k*step;
+    while(j<p.length){const d=Math.hypot(p[j][0]-p[j-1][0],p[j][1]-p[j-1][1]);
+      if(acc+d>=target){const t=d?(target-acc)/d:0;out.push([p[j-1][0]+(p[j][0]-p[j-1][0])*t,p[j-1][1]+(p[j][1]-p[j-1][1])*t]);break}
+      acc+=d;j++}
+    if(out.length<=k)out.push(p[p.length-1]);
+  }
+  out.push(p[p.length-1]);return out;
+}
+function strokeDist(u,m){
+  const N=16,a=resample(u,N),b=resample(m,N);
+  let f=0,r=0;for(let i=0;i<N;i++){f+=Math.hypot(a[i][0]-b[i][0],a[i][1]-b[i][1]);r+=Math.hypot(a[i][0]-b[N-1-i][0],a[i][1]-b[N-1-i][1])}
+  return Math.min(f/N,r/N+15);   // teskari yo'nalish ham qabul qilinadi
+}
+let free=null;
+// o'rtacha og'ish chegarasi (1024 birlikli katakda; ~25px telefonda). Sinovlarda: to'g'ri yozuv 99% <58, qo'polroq yozuv 90% <95.
+const FREE_TOL=90;
+function startFree(tok){
+  const c=wChars(wcur)[wci];
+  getChar(c).then(data=>{if(tok!==wTok)return;free={tok,data,done:new Set(),mis:0,miss:0};buildOverlay()}).catch(()=>{});
+}
+function buildOverlay(){
+  const box=$('wbox');if(!box||!free)return;
+  const size=Math.round(box.clientWidth)||280,pad=Math.round(size*.05),s=(size-2*pad)/1024,xo=pad,yo=124*s+pad;
+  const col=hwColors();const NS='http://www.w3.org/2000/svg';
+  const ov=document.createElementNS(NS,'svg');ov.id='wover';ov.setAttribute('width',size);ov.setAttribute('height',size);
+  ov.innerHTML=`<g id="wovg" transform="translate(${xo},${size-yo}) scale(${s},${-s})"></g><polyline id="wline" fill="none" stroke="${col.drawingColor}" stroke-width="${Math.max(6,Math.round(size/26))}" stroke-linecap="round" stroke-linejoin="round" style="transition:opacity .35s"/>`;
+  box.appendChild(ov);
+  free.geo={size,s,xo,yo};
+  let pts=null;const line=ov.querySelector('#wline');
+  const toPt=e=>{const r=ov.getBoundingClientRect();return[(e.clientX-r.left)*size/r.width,(e.clientY-r.top)*size/r.height]};
+  const draw=()=>{line.style.opacity=1;line.setAttribute('stroke',col.drawingColor);line.setAttribute('points',pts.map(p=>p.join(',')).join(' '))};
+  ov.onpointerdown=e=>{if(!free||free.tok!==wTok)return;e.preventDefault();try{ov.setPointerCapture(e.pointerId)}catch(x){}pts=[toPt(e)];draw()};
+  ov.onpointermove=e=>{if(!pts)return;e.preventDefault();pts.push(toPt(e));draw()};
+  ov.onpointerup=ov.onpointercancel=e=>{if(!pts)return;const p=pts;pts=null;freeStroke(p,line)};
+}
+function freeStroke(p,line){
+  if(!free||free.tok!==wTok)return;
+  const {data,geo}=free;const {size,s,xo,yo}=geo;
+  if(p.length<2||plen(p)<4){line.setAttribute('points','');return}   // shunchaki bosish — e'tiborsiz
+  const cp=p.map(([x,y])=>[(x-xo)/s,(size-yo-y)/s]);
+  let best=-1,bd=1e9;
+  data.medians.forEach((m,i)=>{if(free.done.has(i))return;const d=strokeDist(cp,m);if(d<bd){bd=d;best=i}});
+  const ul=plen(resample(cp,16)),ml=best>=0?plen(data.medians[best]):0;   // silliqlangan uzunlik (titrashga chidamli)
+  const ok=best>=0&&bd<FREE_TOL&&ul>ml*.35&&ul<ml*2.2+120;
+  const m=$('wmsg');
+  if(ok){
+    free.done.add(best);free.miss=0;
+    const NS='http://www.w3.org/2000/svg',path=document.createElementNS(NS,'path');
+    path.setAttribute('d',data.strokes[best]);path.setAttribute('fill',hwColors().strokeColor);
+    $('wovg').appendChild(path);line.setAttribute('points','');
+    m.className='wmsg';m.textContent='';
+    if(free.done.size===data.strokes.length)freeComplete();
+  }else{
+    free.mis++;free.miss++;
+    line.setAttribute('stroke',getComputedStyle(document.documentElement).getPropertyValue('--red').trim());
+    line.style.opacity=0;setTimeout(()=>{if(line.style.opacity==='0')line.setAttribute('points','')},380);
+    m.className='wmsg bad';m.textContent='Bu chiziq emas — qayta urinib ko\'ring';
+    if(free.miss>=(opt.wmode==='mem'?3:2)){free.miss=0;freeFlashHint()}
+  }
+}
+function freeFlashHint(){
+  // hali yozilmagan chiziqlardan birinchisini (to'g'ri tartib bo'yicha) qisqa yondiradi
+  const {data}=free;let i=0;while(free.done.has(i))i++;if(i>=data.strokes.length)return;
+  const NS='http://www.w3.org/2000/svg',path=document.createElementNS(NS,'path');
+  path.setAttribute('d',data.strokes[i]);path.setAttribute('fill',hwColors().highlightColor);
+  path.style.transition='opacity .9s';path.style.opacity='.9';
+  $('wovg').appendChild(path);
+  setTimeout(()=>{path.style.opacity='0'},350);setTimeout(()=>path.remove(),1400);
+}
+function freeComplete(){
+  const tok=wTok;wmis+=free.mis;
+  $('wovg').querySelectorAll('path').forEach(p=>p.setAttribute('fill',hwColors().highlightColor));
+  if(wci+1<wChars(wcur).length){const m=$('wmsg');m.className='wmsg ok';m.textContent='✓';setTimeout(()=>{if(tok===wTok){wci++;wChar()}},650)}
+  else setTimeout(()=>{if(tok===wTok)wWordDone()},450);
+}
 function startQuiz(tok){
+  if(!opt.wstrict)return startFree(tok);
   writer.quiz({
     showHintAfterMisses:opt.wmode==='mem'?3:2,highlightOnComplete:true,leniency:1.15,
     onMistake:()=>{if(tok===wTok){const m=$('wmsg');m.className='wmsg bad';m.textContent='Bu chiziq emas — qayta urinib ko\'ring'}},
@@ -556,8 +643,8 @@ function startQuiz(tok){
 }
 function wHint(){
   if(!writer||wdone)return;whelp=true;const tok=wTok;
-  writer.cancelQuiz();
-  writer.animateCharacter({onComplete:()=>{if(tok!==wTok)return;setTimeout(()=>{if(tok!==wTok)return;writer.hideCharacter();startQuiz(tok)},500)}});
+  if(opt.wstrict)writer.cancelQuiz();
+  writer.animateCharacter({onComplete:()=>{if(tok!==wTok)return;setTimeout(()=>{if(tok!==wTok)return;writer.hideCharacter();if(opt.wstrict)startQuiz(tok)},500)}});
   const m=$('wmsg');m.className='wmsg';m.textContent='Chiziqlar tartibiga qarang, keyin o\'zingiz yozing';
 }
 function wWordDone(){
@@ -592,13 +679,14 @@ function wFinish(){
 function wTip(){
   $('wtip').innerHTML={
     see:'Ieroglif qanday yozilishi animatsiyada ko\'rsatiladi (chiziqlar tartibi bilan). Katakni bossangiz — qaytadan boshlaydi. So\'zdagi boshqa ieroglifni ko\'rish uchun yuqoridagi harfni bosing.',
-    guide:'Kulrang andoza ustidan barmoq yoki sichqoncha bilan chiziqlarni <b>to\'g\'ri tartibda</b> chizing. 2 marta xato qilsangiz, to\'g\'ri chiziq yonib ko\'rsatiladi.',
+    guide:'Kulrang andoza ustidan barmoq yoki sichqoncha bilan chiziqlarni chizing. 2 marta xato qilsangiz, to\'g\'ri chiziq yonib ko\'rsatiladi.',
     mem:'Ieroglifni <b>yoddan</b> yozing — andoza yo\'q. 3 marta xato qilsangiz, yordam chiqadi. 0–1 xato — "bilaman", ko\'proq xato yoki "Ko\'rsatish" — "Yozishda qiyin".'
-  }[opt.wmode]+' <b>Enter</b> — keyingi so\'z.';
+  }[opt.wmode]+(opt.wmode==='see'?'':opt.wstrict?' <b>Tartib bilan</b> yoqilgan: chiziqlarni faqat to\'g\'ri tartibda qabul qiladi.':' Chiziqlarni <b>istalgan tartibda</b> yozishingiz mumkin ("Tartib bilan" — qat\'iy tartibni yoqadi).')+' <b>Enter</b> — keyingi so\'z.';
 }
 function setWMode(m){opt.wmode=m;chips();wTip();save();if(wcur!=null){wci=0;wmis=0;wdone=false;whelp=false;wGraded=false;wChar()}else wStart()}
 document.querySelectorAll('[data-wm]').forEach(c=>c.onclick=()=>setWMode(c.dataset.wm));
 $('cWSh').onclick=()=>{opt.sh=!opt.sh;chips();save();wStart()};
+$('cWOrd').onclick=()=>{opt.wstrict=!opt.wstrict;chips();wTip();save();if(wcur!=null&&!wdone)wChar()};
 wsel.onchange=()=>{cfg.y=wsel.value;save();buildWSets();wStart()};
 
 // ---- klaviatura ----
