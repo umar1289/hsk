@@ -1,30 +1,29 @@
 # HSK — takrorlash
 
-Xitoy tili kitoblari bo'yicha flashcard va gap mashqlari ilovasi (Telegram Mini App sifatida ham ishlaydi).
+Xitoy tili kitoblari bo'yicha flashcard ilovasi (Telegram Mini App sifatida ham ishlaydi).
 
 ## Kitoblar
 
-| Kitob | Darslar | So'zlar | Gaplar |
-|---|---|---|---|
-| 新HSK教程 1 | 15 | 315 | 144 |
-| 新HSK教程 2 | 15 | 210 | 157 |
-| 标准汉语会话360句 1 | 8 | 309 (★ 169 — lug'at kengaytmasi) | 80 (kitobdagi standart gaplar) |
+| Kitob | Darslar | So'zlar |
+|---|---|---|
+| 新HSK教程 1 | 15 | 315 |
+| 新HSK教程 2 | 15 | 210 |
+| 标准汉语会话360句 1 | 8 | 309 (★ 169 — lug'at kengaytmasi) |
 
 ## Bo'limlar
 
-- **Kartalar** — so'zlar: 汉 → o'zbekcha yoki o'zbekcha → 汉, "Qiyin so'zlar" to'plami.
-- **Gaplar** — gap tarjimasi mashqi:
-  - *O'zbekcha → 汉语*: so'z kartochkalaridan xitoycha gapni tuzasiz (ortiqcha so'zlar ham bor);
-  - *汉语 → o'zbekcha*: gapni o'qib, tarjimasini eslaysiz;
-  - *🎧 Tinglab tuzish*: gapni eshitib, kartochkalardan tuzasiz.
-- **Yozish** — ierogliflarni yozishni o'rganish:
-  - *👀 Ko'rish*: chiziqlar tartibi animatsiyada ko'rsatiladi;
-  - *✍️ Andoza bilan*: kulrang andoza ustidan barmoq/sichqoncha bilan chiziqlarni tartib bilan chizasiz;
-  - *🧠 Yoddan*: andozasiz yozasiz; 0–1 xato — "bilaman", ko'proq — "Yozishda qiyin".
-  - Odatda chiziqlarni **istalgan tartibda** yozish mumkin; *Tartib bilan* tugmasi qat'iy (to'g'ri) chiziq tartibini yoqadi.
-- **Ro'yxat** — kitobning barcha so'zlari, qidiruv va holat bo'yicha filtr.
+- **Kartalar** — so'zlar: 汉 → o'zbekcha yoki o'zbekcha → 汉.
+- **Ro'yxat** — kitobning barcha so'zlari va ularning ballari, qidiruv va filtr.
 
-Natijalar har bir kitob uchun alohida saqlanadi (brauzerda va Telegram CloudStorage'da).
+## Ball tizimi
+
+- **Bilaman** → +1 ball, **Bilmayman** → −2 ball (chegarasi: −5 … +10).
+- Keyingi karta tasodifiy tanlanadi, lekin balli yuqori so'z kamroq chiqadi: har +2 ball so'zni 2 baravar kamroq chiqaradi
+  (−4 ball → 4×, 0 → 1×, +5 → ~⅙, +10 → ~1/32). Ketma-ket 3 ta kartada bitta so'z takrorlanmaydi.
+- **5+ ball** — so'z "o'rganilgan". Dars tanlovida va karta tepasida darsning bilish darajasi (%) ko'rsatiladi.
+- "Qiyin so'zlar" — balli manfiy bo'lgan so'zlar.
+- Ballar har bir kitob uchun alohida saqlanadi (brauzerda va Telegram CloudStorage'da).
+- Qiymatlarni `index.html` dagi `PT` obyektida o'zgartirish mumkin.
 
 ## Yangi kitob yoki so'z qo'shish
 
@@ -33,7 +32,7 @@ Ma'lumotlar `books/src/` papkasida:
 - `<id>.lessons.json` — darslar sarlavhasi va tarjimasi;
 - `<id>.words.tsv` — `ieroglif ⇥ pinyin ⇥ o'zbekcha ⇥ dars ⇥ ★(0/1) ⇥ [darslar]`;
 - `<id>.extra.tsv` — (ixtiyoriy) qo'shimcha so'zlar, ★ bilan;
-- `<id>.sents.json` — `[dars, "so'zlar bo'sh joy bilan", "pinyin har so'zga", "o'zbekcha", [boshqa to'g'ri tartiblar]]`.
+- `<id>.sents.json` — gaplar (hozircha ilovada ishlatilmaydi).
 
 O'zgartirgandan keyin:
 
@@ -41,14 +40,6 @@ O'zgartirgandan keyin:
 python3 tools/build_books.py
 ```
 
-Yangi so'zlar qo'shilganda, ularning ierogliflari uchun yozish ma'lumotlarini yuklab oling:
-
-```bash
-python3 tools/fetch_hanzi.py
-```
-
 Yangi kitob uchun `tools/build_books.py` dagi `BOOKS` ro'yxatiga yozuv qo'shing va `index.html` ga `<script src="books/<id>.js">` qatorini qo'shing.
 
-Yozish mashqi [Hanzi Writer](https://hanziwriter.org) (MIT) kutubxonasidan foydalanadi (`vendor/`). Chiziq ma'lumotlari (`hanzi/`) — [Make Me a Hanzi](https://github.com/skishore/makemeahanzi) loyihasidan (Arphic Public License).
-
-360句 kitobidagi gaplar — kitobning o'z "标准句" ro'yxatidan; 新HSK教程 1 va 2 uchun gaplar har bir darsning so'zlari va grammatikasi asosida tuzilgan.
+Gap tuzish va ieroglif yozish mashqlari vaqtincha olib tashlangan; ular `74f24a2` commitida saqlangan.

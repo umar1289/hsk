@@ -9,9 +9,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f6f4ef;--card:#fff;--ink:#1d1c1a;--mut:#77736b;--line:#e5e1d8;--red:#c8372d;--green:#2f8a57;--soft:#efebe3;--okbg:#e3f3ea;--badbg:#fbe6e3}
-html.dark{--bg:#161514;--card:#211f1d;--ink:#f1eee8;--mut:#9b968d;--line:#34312d;--soft:#2a2825;--okbg:#1f3a2a;--badbg:#46201c}
-@media (prefers-color-scheme:dark){:root{--bg:#161514;--card:#211f1d;--ink:#f1eee8;--mut:#9b968d;--line:#34312d;--soft:#2a2825;--okbg:#1f3a2a;--badbg:#46201c}}
+:root{--bg:#f6f4ef;--card:#fff;--ink:#1d1c1a;--mut:#77736b;--line:#e5e1d8;--red:#c8372d;--green:#2f8a57;--amber:#b7791f;--soft:#efebe3;--okbg:#e3f3ea;--badbg:#fbe6e3;--midbg:#f8eedb}
+html.dark{--bg:#161514;--card:#211f1d;--ink:#f1eee8;--mut:#9b968d;--line:#34312d;--soft:#2a2825;--okbg:#1f3a2a;--badbg:#46201c;--midbg:#3a2f1c;--green:#4fb07a;--amber:#e0a84a}
+@media (prefers-color-scheme:dark){:root{--bg:#161514;--card:#211f1d;--ink:#f1eee8;--mut:#9b968d;--line:#34312d;--soft:#2a2825;--okbg:#1f3a2a;--badbg:#46201c;--midbg:#3a2f1c;--green:#4fb07a;--amber:#e0a84a}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
 .wrap{max-width:560px;margin:0 auto;padding:16px 16px 40px}
@@ -30,6 +30,7 @@ select{flex:1;min-width:0}
 .bar{height:6px;background:var(--soft);border-radius:9px;overflow:hidden;margin:4px 0 6px}
 .bar i{display:block;height:100%;background:var(--green);width:0;transition:width .3s}
 .meta{display:flex;justify-content:space-between;font-size:12px;color:var(--mut);margin-bottom:12px}
+.meta b{color:var(--ink);font-weight:600}
 .card{background:var(--card);border:1px solid var(--line);border-radius:20px;min-height:340px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 20px;text-align:center;cursor:pointer;position:relative;box-shadow:0 2px 10px rgba(0,0,0,.04)}
 .hz{font-family:"Noto Sans SC",sans-serif;font-weight:500;font-size:88px;line-height:1.15;word-break:keep-all}
 .hz.long{font-size:64px}.hz.xl{font-size:50px}.hz.xxl{font-size:38px}
@@ -39,12 +40,16 @@ select{flex:1;min-width:0}
 .hint{position:absolute;bottom:14px;left:12px;right:12px;font-size:12px;color:var(--mut)}
 .hidden{visibility:hidden}
 .say{position:absolute;top:12px;right:12px;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:50%;width:40px;height:40px;font-size:18px;cursor:pointer}
+/* ball nishoni */
+.pts{font:600 12px Inter,sans-serif;padding:4px 9px;border-radius:999px;background:var(--soft);color:var(--mut);white-space:nowrap}
+.pts.lo{background:var(--badbg);color:var(--red)}
+.pts.mid{background:var(--midbg);color:var(--amber)}
+.pts.hi{background:var(--okbg);color:var(--green)}
+.card .pts{position:absolute;top:18px;left:14px}
 .btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
-.btns.one{grid-template-columns:1fr}
-.btns button{font:600 16px Inter,sans-serif;padding:16px;border-radius:14px;border:0;cursor:pointer;color:#fff}
+.btns button{font:600 16px Inter,sans-serif;padding:14px 10px;border-radius:14px;border:0;cursor:pointer;color:#fff;line-height:1.25}
+.btns button small{display:block;font-weight:500;font-size:12px;opacity:.85}
 .no{background:var(--red)}.yes{background:var(--green)}
-.btns button.go{background:var(--ink);color:var(--bg)}
-.btns button.mild{background:var(--soft);color:var(--ink)}
 .btns button:disabled{opacity:.35;cursor:default}
 .done{text-align:center;padding:40px 10px}
 .done .big{font-size:44px;font-weight:700}
@@ -55,59 +60,21 @@ select{flex:1;min-width:0}
 .li:last-child{border:0}
 .li .h{font-family:"Noto Sans SC",sans-serif;font-size:24px;word-break:keep-all}
 .li .p{color:var(--red);font-size:13px}.li .u{font-size:14px}
-.st{font-size:11px;padding:3px 7px;border-radius:99px;background:var(--soft);color:var(--mut);white-space:nowrap}
-.st.k{background:var(--okbg);color:var(--green)}.st.d{background:var(--badbg);color:var(--red)}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
-.stats div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
-.stats b{display:block;font-size:22px}.stats span{font-size:12px;color:var(--mut)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px}
+.stats div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 4px;text-align:center}
+.stats b{display:block;font-size:20px}.stats span{font-size:11px;color:var(--mut)}
 .ltitle{margin:2px 0 10px;font-size:14px;line-height:1.5}.lt-n{font-weight:700;color:var(--red)}.lt-h{font-family:'Noto Sans SC',sans-serif;font-size:16px;margin:0 4px}.lt-u{color:var(--mut)}
 .lh{background:var(--soft);font-size:13px;font-weight:600;padding:9px 12px;border-bottom:1px solid var(--line)}
 .li .h sup{font-size:10px;color:var(--mut)}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--red);color:#fff;font:600 14px Inter,sans-serif;padding:10px 16px;border-radius:999px;opacity:0;transition:.2s;pointer-events:none;z-index:9;white-space:nowrap}.toast.ok{background:var(--green)}.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 .tip{font-size:12px;color:var(--mut);text-align:center;margin-top:14px;line-height:1.5}
-/* gaplar */
-.card.sc{min-height:0;cursor:default;padding:24px 16px 18px}
-.card.sc.flip{min-height:260px;cursor:pointer;padding-bottom:40px}
-.szh{font-family:"Noto Sans SC",sans-serif;font-size:30px;line-height:1.45;font-weight:500;word-break:break-all}
-.spy{font-size:17px;color:var(--red);font-weight:500;margin-top:8px;line-height:1.4}
-.uz.sp{font-size:21px;margin:4px 34px 14px}
-.lbl{font-size:12px;color:var(--mut);margin-bottom:6px}
-.ans{width:100%;min-height:64px;border:1.5px dashed var(--line);border-radius:14px;padding:8px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center;margin-top:4px}
-.ans.ok{border:2px solid var(--green);background:var(--okbg)}
-.ans.bad{border:2px solid var(--red);background:var(--badbg)}
-.ph{color:var(--mut);font-size:13px}
-.tiles{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
-.tile{font:500 22px "Noto Sans SC",sans-serif;color:var(--ink);background:var(--card);border:1px solid var(--line);border-bottom-width:3px;border-radius:12px;padding:7px 12px;cursor:pointer;line-height:1.2;min-width:46px}
-.tile small{display:block;font:500 11px Inter,sans-serif;color:var(--red);margin-top:2px}
-.tile.used{visibility:hidden}
-.ans .tile{font-size:20px;padding:5px 10px}
-.res{margin-top:14px;width:100%;border-top:1px solid var(--line);padding-top:12px}
-.res .lbl{margin:0 0 4px}
-.res .szh{font-size:24px}
-.res .uz{font-size:16px;font-weight:500;margin-top:6px}
-.replay{font:600 15px Inter,sans-serif;border:1px solid var(--line);background:var(--soft);color:var(--ink);padding:12px 18px;border-radius:12px;cursor:pointer;margin:2px 0 14px}
-/* yozish */
-.wcard{padding:18px 16px 16px}
-.wword{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:6px}
-.wc{font:500 26px "Noto Sans SC",sans-serif;color:var(--mut);background:var(--soft);border:2px solid transparent;border-radius:10px;min-width:46px;height:46px;padding:0 6px;cursor:pointer;line-height:1}
-.wc.on{color:var(--ink);border-color:var(--red);background:var(--card)}
-.wc.ok{color:var(--green)}
-.wbox{position:relative;width:min(280px,100%);aspect-ratio:1/1;margin:14px auto 4px;touch-action:none;-webkit-user-select:none;user-select:none}
-.wbox .grid{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.wbox .grid rect{fill:var(--card);stroke:var(--line);stroke-width:1}
-.wbox .grid line{stroke:var(--line);stroke-width:.6;stroke-dasharray:2 2}
-#wtarget{position:absolute;inset:0;touch-action:none}
-#wover{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair}
-#wtarget svg{display:block}
-.wmsg{min-height:22px;font-size:15px;font-weight:600;margin-top:8px}
-.wmsg.ok{color:var(--green)}.wmsg.bad{color:var(--red)}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header>
   <div class="bookrow"><span class="logo">汉</span><select id="book" aria-label="Kitob"></select></div>
-  <div class="tabs"><button id="tStudy" class="on">Kartalar</button><button id="tSent">Gaplar</button><button id="tWrite">Yozish</button><button id="tList">Ro'yxat</button></div>
+  <div class="tabs"><button id="tStudy" class="on">Kartalar</button><button id="tList">Ro'yxat</button></div>
 </header>
 
 <section id="study">
@@ -118,651 +85,263 @@ select{flex:1;min-width:0}
     <span class="chip" id="mHz">汉 → o'zbekcha</span>
     <span class="chip" id="mUz">O'zbekcha → 汉</span>
     <span class="chip" id="cPy">Pinyin oldindan</span>
-    <span class="chip" id="cSh">Aralashtirish</span>
   </div>
   <div id="ltitle" class="ltitle"></div>
   <div class="bar"><i id="prog"></i></div>
   <div class="meta"><span id="left"></span><span id="score"></span></div>
   <div id="stage"></div>
-  <p class="tip">Kartani bosing yoki <b>Space</b> — javobni ko'rish · <b>1</b> bilmayman · <b>2</b> bilaman.<br>"Bilmayman" — so'z "Qiyin so'zlar"ga tushadi (darsda qayta chiqmaydi). U yerdan faqat "Qiyin so'zlar" to'plamida "Bilaman"ni bossangiz chiqadi. ★ — <span id="starTip"></span>.</p>
-</section>
-
-<section id="sent" style="display:none">
-  <div class="row"><select id="sset"></select></div>
-  <div class="row">
-    <span class="chip" data-sm="uz">O'zbekcha → 汉语</span>
-    <span class="chip" data-sm="zh">汉语 → o'zbekcha</span>
-    <span class="chip" data-sm="ear">🎧 Tinglab tuzish</span>
-    <span class="chip" id="cSPy">Pinyin</span>
-    <span class="chip" id="cSSh">Aralashtirish</span>
-  </div>
-  <div id="sltitle" class="ltitle"></div>
-  <div class="bar"><i id="sprog"></i></div>
-  <div class="meta"><span id="sleft"></span><span id="sscore"></span></div>
-  <div id="sstage"></div>
-  <p class="tip" id="stip"></p>
-</section>
-
-<section id="write" style="display:none">
-  <div class="row"><select id="wset"></select></div>
-  <div class="row">
-    <span class="chip" data-wm="see">👀 Ko'rish</span>
-    <span class="chip" data-wm="guide">✍️ Andoza bilan</span>
-    <span class="chip" data-wm="mem">🧠 Yoddan</span>
-    <span class="chip" id="cWOrd">Tartib bilan</span>
-    <span class="chip" id="cWSh">Aralashtirish</span>
-  </div>
-  <div id="wltitle" class="ltitle"></div>
-  <div class="bar"><i id="wprog"></i></div>
-  <div class="meta"><span id="wleft"></span><span id="wscore"></span></div>
-  <div id="wstage"></div>
-  <p class="tip" id="wtip"></p>
+  <p class="tip">Kartani bosing yoki <b>Space</b> — javobni ko'rish · <b>1</b> bilmayman · <b>2</b> bilaman.<br>
+  <b>Ball:</b> "Bilaman" — <b id="tipK"></b>, "Bilmayman" — <b id="tipD"></b>. Balli yuqori so'z kamroq, past yoki manfiy balli so'z ko'proq chiqadi. <b id="tipL"></b> va undan yuqori ball — so'z o'rganilgan.<br>★ — <span id="starTip"></span>.</p>
 </section>
 
 <section id="listv" style="display:none">
-  <div class="stats"><div><b id="sK">0</b><span>Bilaman</span></div><div><b id="sD">0</b><span>Qiyin</span></div><div><b id="sN">0</b><span>Ko'rilmagan</span></div></div>
+  <div class="stats"><div><b id="sL">0</b><span>O'rganilgan</span></div><div><b id="sM">0</b><span>O'rganilmoqda</span></div><div><b id="sD">0</b><span>Qiyin</span></div><div><b id="sN">0</b><span>Yangi</span></div></div>
   <div class="row"><input type="search" id="q" placeholder="Qidirish: 汉字, pinyin yoki o'zbekcha" style="flex:1"></div>
-  <div class="row"><span class="chip on" data-f="all">Hammasi</span><span class="chip" data-f="d">Qiyin</span><span class="chip" data-f="k">Bilaman</span><span class="chip" data-f="n">Ko'rilmagan</span></div>
+  <div class="row"><span class="chip on" data-f="all">Hammasi</span><span class="chip" data-f="d">Qiyin</span><span class="chip" data-f="m">O'rganilmoqda</span><span class="chip" data-f="l">O'rganilgan</span><span class="chip" data-f="n">Yangi</span></div>
   <div class="list" id="list"></div>
-  <p class="tip"><button class="prim sec" id="reset">Shu kitob natijalarini tozalash</button></p>
+  <p class="tip"><button class="prim sec" id="reset">Shu kitob ballarini tozalash</button></p>
 </section>
-<p class="tip" id="nostore" style="display:none;color:var(--red)">Bu brauzer natijalarni saqlashga ruxsat bermayapti — sahifani yopsangiz, belgilar yo'qoladi.</p>
+<p class="tip" id="nostore" style="display:none;color:var(--red)">Bu brauzer natijalarni saqlashga ruxsat bermayapti — sahifani yopsangiz, ballar yo'qoladi.</p>
 <div id="toast" class="toast"></div>
 </div>
 
-<script src="vendor/hanzi-writer.min.js"></script>
-<script src="books/xin1.js?v=2"></script>
-<script src="books/xin2.js?v=2"></script>
-<script src="books/s360_1.js?v=2"></script>
+<script src="books/xin1.js?v=3"></script>
+<script src="books/xin2.js?v=3"></script>
+<script src="books/s360_1.js?v=3"></script>
 <script>
 const BOOKS=window.BOOKS||[];
 const $=id=>document.getElementById(id);
-const PUN=/^[，。！？、：；,.!?]$/;
 const TG=(window.Telegram&&Telegram.WebApp&&Telegram.WebApp.initData)?Telegram.WebApp:null;
 const CS=TG&&TG.isVersionAtLeast&&TG.isVersionAtLeast('6.9')?TG.CloudStorage:null;
 function lsGet(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 let storeOk=true;
 function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){storeOk=false}}
-function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 
-// ---- sozlamalar (eski "hsk1bookopt" kaliti saqlanadi) ----
-let opt=Object.assign({mode:'hz',py:false,sh:true,book:BOOKS[0].id,sets:{},smode:'uz',spy:false,wmode:'see',view:'study'},lsGet('hsk1bookopt',{}));
+// ================= BALL TIZIMI =================
+// Bu qiymatlarni o'zgartirib, tizimni sozlash mumkin.
+const PT={
+  known:1,      // "Bilaman" — shuncha ball qo'shiladi
+  unknown:-2,   // "Bilmayman" — shuncha ball ayiriladi
+  min:-5,max:10,// ball chegarasi
+  learned:5,    // shu balldan boshlab so'z "o'rganilgan" hisoblanadi
+  newWeight:1.3 // hali ko'rilmagan so'zning chiqish og'irligi (0 ball = 1)
+};
+// Chiqish og'irligi: har 2 ball qo'shilganda so'z 2 baravar kamroq chiqadi.
+//  -4 ball → 4×,  0 → 1×,  +2 → ½,  +5 → ~⅙,  +10 → ~1/32
+function weight(s){return s==null?PT.newWeight:Math.pow(2,-s/2)}
+function clampPt(s){return Math.max(PT.min,Math.min(PT.max,s))}
+function ptCls(s){return s==null?'':s<0?'lo':s>=PT.learned?'hi':'mid'}
+function ptLabel(s){return s==null?'yangi':(s>0?'+':'')+s+' ball'}
+
+// ---- sozlamalar ----
+let opt=Object.assign({mode:'hz',py:false,book:BOOKS[0].id,sets:{},view:'study'},lsGet('hsk1bookopt',{}));
 if(!opt.sets||typeof opt.sets!=='object')opt.sets={};
-if(opt.set&&!opt.sets.xin1)opt.sets.xin1={w:opt.set,s:'1'};
+if(opt.set&&!opt.sets.xin1)opt.sets.xin1={w:opt.set};
+if(!['study','listv'].includes(opt.view))opt.view='study';
 
 // ---- joriy kitob ----
-let B,W,T,NL,SN,st,ss,wst,cfg;
+let B,W,T,NL,pts,cfg;
 function wkey(w){return B.keyPy?w[0]+'|'+w[1]:w[0]}
-function skey(s){return s[1].replace(/ /g,'')}
-function S(i){return st[wkey(W[i])]}
-function SS(i){return ss[skey(SN[i])]}
+function P(i){const v=pts[wkey(W[i])];return v==null?null:v}
 function loadBook(id){
   B=BOOKS.find(b=>b.id===id)||BOOKS[0];opt.book=B.id;
-  W=B.words;T=B.lessons;NL=T.length;SN=B.sents||[];
-  st=lsGet(B.store,{});ss=lsGet(B.store+'_s',{});wst=lsGet(B.store+'_w',{});
-  cfg=opt.sets[B.id]||(opt.sets[B.id]={w:'1',s:'1',y:'1'});
-  if(!cfg.s)cfg.s='1';if(!cfg.y)cfg.y='1';
+  W=B.words;T=B.lessons;NL=T.length;
+  pts=lsGet(B.store+'_pts',null);
+  if(!pts){ // eski "bilaman/qiyin" natijalaridan ko'chirish
+    pts={};const old=lsGet(B.store,{});
+    for(const k in old){if(old[k]==='k')pts[k]=2;else if(old[k]==='d')pts[k]=-2}
+    lsSet(B.store+'_pts',pts);
+  }
+  cfg=opt.sets[B.id]||(opt.sets[B.id]={w:'1'});if(!cfg.w)cfg.w='1';
   document.title=B.short+' — takrorlash';
   $('book').value=B.id;$('starTip').textContent=B.star;
 }
 function save(){
-  storeOk=true;lsSet(B.store,st);lsSet(B.store+'_s',ss);lsSet(B.store+'_w',wst);lsSet('hsk1bookopt',opt);cloudSave();
+  storeOk=true;lsSet(B.store+'_pts',pts);lsSet('hsk1bookopt',opt);cloudSave();
   $('nostore').style.display=storeOk?'none':'';
 }
 
-// ---- Telegram CloudStorage ----
-function packArr(arr,kf,o){return arr.map(x=>o[kf(x)]||'-').join('')}
-function unpackArr(s,arr,kf){const o={};arr.forEach((x,i)=>{const c=s[i];if(c==='k'||c==='d')o[kf(x)]=c});return o}
-function ckS(){return 's_'+B.id}
-function ckW(){return 'w_'+B.id}
-function cloudSave(){if(!CS)return;try{CS.setItem(B.cloud,packArr(W,wkey,st));if(SN.length)CS.setItem(ckS(),packArr(SN,skey,ss));CS.setItem(ckW(),packArr(W,wkey,wst))}catch(e){}}
+// ---- Telegram CloudStorage: har bir so'z balli bitta harf (a = -5 ... p = +10, "-" = yangi) ----
+function ckP(){return 'b_'+B.id}
+function packPts(){return W.map(w=>{const v=pts[wkey(w)];return v==null?'-':String.fromCharCode(97+v-PT.min)}).join('')}
+function unpackPts(s){const o={};W.forEach((w,i)=>{const c=s.charCodeAt(i)-97;if(c>=0&&c<=PT.max-PT.min)o[wkey(w)]=c+PT.min});return o}
+function cloudSave(){if(!CS)return;try{CS.setItem(ckP(),packPts())}catch(e){}}
 function cloudLoad(){
   if(!CS)return;const id=B.id;
-  try{CS.getItems([B.cloud,ckS(),ckW()],(err,v)=>{
+  try{CS.getItems([ckP(),B.cloud],(err,v)=>{
     if(err||!v||B.id!==id)return;
-    const a=v[B.cloud],b=v[ckS()],c=v[ckW()];let ch=false;
-    if(a&&a.length===W.length){st=unpackArr(a,W,wkey);ch=true}
-    if(b&&b.length===SN.length){ss=unpackArr(b,SN,skey);ch=true}
-    if(c&&c.length===W.length){wst=unpackArr(c,W,wkey);ch=true}
-    lsSet(B.store,st);lsSet(B.store+'_s',ss);lsSet(B.store+'_w',wst);cloudSave();
-    if(ch){buildSets();buildSSets();buildWSets();if(opt.view==='listv')drawList()}
+    const a=v[ckP()],old=v[B.cloud];let ch=false;
+    if(a&&a.length===W.length){pts=unpackPts(a);ch=true}
+    else if(old&&old.length===W.length&&!Object.keys(pts).length){ // eski bulut ma'lumotidan ko'chirish
+      W.forEach((w,i)=>{if(old[i]==='k')pts[wkey(w)]=2;else if(old[i]==='d')pts[wkey(w)]=-2});ch=true}
+    lsSet(B.store+'_pts',pts);cloudSave();
+    if(ch){buildSets();if(opt.view==='listv')drawList();else if(cur!=null)render()}
   })}catch(e){}
 }
 
 // ================= KARTALAR =================
 const sel=$('set');
+function idxFor(s){
+  const all=W.map((_,i)=>i);
+  if(s==='all')return all;
+  if(s==='hard')return all.filter(i=>P(i)!=null&&P(i)<0);
+  if(s==='new')return all.filter(i=>P(i)==null);
+  return all.filter(i=>W[i][3]===+s);
+}
+// to'plamni bilish darajasi: har so'z 0..learned ball oralig'ida hisoblanadi
+function mastery(ix){if(!ix.length)return 0;let t=0;ix.forEach(i=>{const s=P(i);t+=s==null?0:Math.max(0,Math.min(PT.learned,s))});return Math.round(t/(ix.length*PT.learned)*100)}
 function buildSets(){
   let h='';
-  for(let l=1;l<=NL;l++){const ix=W.map((w,i)=>i).filter(i=>W[i][3]===l);if(!ix.length)continue;const k=ix.filter(i=>S(i)==='k').length;
-    h+=`<option value="${l}">${l}-dars · ${esc(T[l-1][1])} · ${k}/${ix.length} ✓</option>`}
-  const d=W.filter((_,i)=>S(i)==='d').length;
-  h+=`<option value="hard">Qiyin so'zlar (${d})</option>`;
-  h+=`<option value="new">Hali ko'rilmaganlar</option><option value="all">Hammasi (${W.length})</option>`;
+  for(let l=1;l<=NL;l++){const ix=idxFor(String(l));if(!ix.length)continue;
+    h+=`<option value="${l}">${l}-dars · ${esc(T[l-1][1])} · ${mastery(ix)}%</option>`}
+  h+=`<option value="hard">Qiyin so'zlar — ball manfiy (${idxFor('hard').length})</option>`;
+  h+=`<option value="new">Hali ko'rilmaganlar (${idxFor('new').length})</option><option value="all">Hammasi (${W.length}) · ${mastery(idxFor('all'))}%</option>`;
   sel.innerHTML=h;sel.value=cfg.w;if(!sel.value){sel.value='1';cfg.w='1'}
   showTitle();
 }
 function lessonTitle(l){return l?`<span class="lt-n">${l}-dars</span> <span class="lt-h">${esc(T[l-1][0])}</span> <span class="lt-u">${esc(T[l-1][1])}</span>`:''}
 function showTitle(){$('ltitle').innerHTML=lessonTitle(+cfg.w)}
-function idxFor(s){
-  const all=W.map((_,i)=>i);
-  if(s==='all')return all;
-  if(s==='hard')return all.filter(i=>S(i)==='d');
-  if(s==='new')return all.filter(i=>!S(i));
-  return all.filter(i=>W[i][3]===+s);
+
+let cur=null,shown=false,ok=0,bad=0,recent=[],celebrated=false;
+function start(){ok=0;bad=0;recent=[];celebrated=false;next()}
+// og'irlik bo'yicha tasodifiy tanlash; yaqinda chiqqan so'zlar takrorlanmaydi
+function pick(){
+  const ix=idxFor(cfg.w);if(!ix.length)return null;
+  const nAvoid=Math.min(3,ix.length-1);
+  const avoid=new Set(nAvoid>0?recent.slice(-nAvoid):[]);
+  let cand=ix.filter(i=>!avoid.has(i));if(!cand.length)cand=ix;
+  let tot=0;const ws=cand.map(i=>{const w=weight(P(i));tot+=w;return w});
+  let r=Math.random()*tot;for(let j=0;j<cand.length;j++){r-=ws[j];if(r<=0)return cand[j]}
+  return cand[cand.length-1];
 }
-let q=[],total=0,ok=0,bad=0,cur=null,shown=false,uniq=0,wrong=new Set();
-function start(){
-  q=idxFor(cfg.w);if(opt.sh)shuffle(q);
-  total=q.length;uniq=q.length;wrong=new Set();ok=0;bad=0;next();
+function next(){
+  shown=false;
+  const ix=idxFor(cfg.w);
+  const lessonSet=!isNaN(+cfg.w)||cfg.w==='all';
+  if(!ix.length)return finish('empty');
+  if(lessonSet&&!celebrated&&ix.every(i=>P(i)!=null&&P(i)>=PT.learned))return finish('learned');
+  cur=pick();recent.push(cur);if(recent.length>20)recent.shift();
+  render();
 }
 function hzCls(h){return h.length>=6?'hz xxl':h.length>=4?'hz xl':h.length===3?'hz long':'hz'}
-function next(){shown=false;cur=q.shift();if(cur===undefined)return finish();render()}
 function render(){
-  const [h,p,u]=W[cur];const s=$('stage');
+  const [h,p,u]=W[cur];const s=$('stage');const sc=P(cur);
+  const badge=`<span class="pts ${ptCls(sc)}">${ptLabel(sc)}</span>`;
   if(opt.mode==='hz'){
-    s.innerHTML=`<div class="card" id="card"><button class="say" id="say" title="Eshitish">🔊</button>
+    s.innerHTML=`<div class="card" id="card">${badge}<button class="say" id="say" title="Eshitish">🔊</button>
       <div class="${hzCls(h)}">${esc(h)}</div>
       <div class="py ${opt.py||shown?'':'hidden'}">${esc(p)}</div>
       <div class="uz ${shown?'':'hidden'}">${esc(u)}</div>
       <div class="hint">${shown?les(cur):'bosing — javob'}</div></div>`;
   }else{
-    s.innerHTML=`<div class="card" id="card"><button class="say ${shown?'':'hidden'}" id="say">🔊</button>
+    s.innerHTML=`<div class="card" id="card">${badge}<button class="say ${shown?'':'hidden'}" id="say">🔊</button>
       <div class="uz big">${esc(u)}</div>
       <div class="${hzCls(h)} ${shown?'':'hidden'}" style="margin-top:14px">${esc(h)}</div>
       <div class="py ${shown?'':'hidden'}">${esc(p)}</div>
       <div class="hint">${shown?les(cur):'ieroglifni eslang, keyin bosing'}</div></div>`;
   }
-  s.insertAdjacentHTML('beforeend',`<div class="btns"><button class="no" id="bNo" ${shown?'':'disabled'}>Bilmayman</button><button class="yes" id="bYes" ${shown?'':'disabled'}>Bilaman</button></div>`);
+  s.insertAdjacentHTML('beforeend',`<div class="btns"><button class="no" id="bNo" ${shown?'':'disabled'}>Bilmayman<small>${PT.unknown} ball</small></button><button class="yes" id="bYes" ${shown?'':'disabled'}>Bilaman<small>+${PT.known} ball</small></button></div>`);
   $('card').onclick=e=>{if(e.target.id==='say')return;flip()};
   $('say').onclick=e=>{e.stopPropagation();speak(h)};
   $('bNo').onclick=()=>answer(false);$('bYes').onclick=()=>answer(true);
-  const done=total-q.length-1;$('prog').style.width=(total?Math.max(0,done)/total*100:0)+'%';
-  $('left').textContent=`Qoldi: ${q.length+1}`;$('score').textContent=`✓ ${ok}  ·  ✗ ${bad}`;
+  progress();
+}
+function progress(){
+  const ix=idxFor(cfg.w);const m=mastery(ix);
+  $('prog').style.width=m+'%';
+  const learned=ix.filter(i=>P(i)!=null&&P(i)>=PT.learned).length;
+  $('left').innerHTML=`Bilish darajasi: <b>${m}%</b> · o'rganilgan ${learned}/${ix.length}`;
+  $('score').textContent=`✓ ${ok}  ·  ✗ ${bad}`;
 }
 function les(i){const w=W[i];return `${w[5].includes(',')?w[5]+'-darslarda':w[5]+'-dars'}${w[4]?' · ★ '+B.starShort:''}`}
 function flip(){if(shown||cur==null)return;shown=true;render();if(opt.mode==='uz')speak(W[cur][0])}
 function answer(y){
-  if(!shown)return;
-  const hardMode=cfg.w==='hard';const k=wkey(W[cur]);let msg='';
-  if(y){ok++;
-    if(hardMode){st[k]='k';msg='✓ Qiyin so\'zlardan chiqarildi'}
-    else if(S(cur)!=='d'){st[k]='k'}}
-  else{bad++;wrong.add(cur);if(S(cur)!=='d'&&!hardMode)msg='＋ Qiyin so\'zlarga qo\'shildi';st[k]='d'}
-  save();buildSets();toast(msg);next();
+  if(!shown||cur==null)return;
+  const k=wkey(W[cur]);const before=P(cur);
+  const after=clampPt((before==null?0:before)+(y?PT.known:PT.unknown));
+  pts[k]=after;if(y)ok++;else bad++;
+  save();buildSets();
+  const d=after-(before==null?0:before);
+  toast(`${d>0?'+':d<0?'−':'±'}${Math.abs(d)} ball → ${after>0?'+':''}${after}${before==null?' (yangi so\'z)':''}`,y);
+  next();
 }
-let tt;function toast(m){const e=$('toast');if(!m){e.classList.remove('on');return}e.textContent=m;e.classList.toggle('ok',m[0]==='✓');e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),1400)}
-function finish(){
-  cur=null;buildSets();
-  $('prog').style.width='100%';$('left').textContent='Tugadi';
-  $('stage').innerHTML=total?`<div class="card done" style="cursor:default"><div class="big">${uniq-wrong.size} / ${uniq}</div>
-   <p style="color:var(--mut)">birinchi urinishda bildingiz · ${wrong.size} ta so'z qiyin bo'ldi</p>
-   <div><button class="prim" id="again">Qaytadan</button><button class="prim sec" id="nx">Keyingi dars →</button></div>
-   ${wrong.size?'<div><button class="prim sec" id="hard">Qiyin so\'zlarni takrorlash</button></div>':''}</div>`
-   :`<div class="card done" style="cursor:default"><p>Bu to'plamda so'z yo'q.</p><button class="prim" id="again">Qaytadan</button></div>`;
-  const a=$('again');if(a)a.onclick=start;
-  const n=$('nx');if(n)n.onclick=()=>{const v=isNaN(+cfg.w)||!+cfg.w?1:Math.min(+cfg.w+1,NL);cfg.w=String(v);sel.value=cfg.w;save();showTitle();start()};
-  const h=$('hard');if(h)h.onclick=()=>{cfg.w='hard';sel.value='hard';save();showTitle();start()};
+let tt;function toast(m,good){const e=$('toast');if(!m){e.classList.remove('on');return}e.textContent=m;e.classList.toggle('ok',!!good);e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),1400)}
+function finish(why){
+  cur=null;buildSets();progress();
+  const learned=why==='learned';
+  const txt=learned?`<div class="big">🎉</div><p>Bu to'plamdagi barcha so'zlar o'rganildi (har biri ${PT.learned}+ ball)!</p>`
+    :cfg.w==='hard'?`<div class="big">👍</div><p>Manfiy balli so'z qolmadi.</p>`
+    :cfg.w==='new'?`<p>Yangi so'z qolmadi — hammasi kamida bir marta ko'rildi.</p>`:`<p>Bu to'plamda so'z yo'q.</p>`;
+  $('stage').innerHTML=`<div class="card done" style="cursor:default">${txt}
+    <div>${learned?'<button class="prim" id="cont">Davom etish</button>':''}<button class="prim sec" id="nx">Keyingi dars →</button></div></div>`;
+  const c=$('cont');if(c)c.onclick=()=>{celebrated=true;next()};
+  $('nx').onclick=()=>{const v=isNaN(+cfg.w)||!+cfg.w?1:Math.min(+cfg.w+1,NL);cfg.w=String(v);sel.value=cfg.w;save();showTitle();start()};
 }
 
 // ---- ovoz ----
 let zhVoice=null;
 function pickVoice(){try{const v=speechSynthesis.getVoices();zhVoice=v.find(x=>/zh[-_]CN/i.test(x.lang))||v.find(x=>/^zh/i.test(x.lang))||null}catch(e){}}
 try{pickVoice();speechSynthesis.onvoiceschanged=pickVoice}catch(e){}
-function speak(t,rate){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='zh-CN';u.rate=rate||.8;if(zhVoice)u.voice=zhVoice;speechSynthesis.speak(u)}catch(e){}}
+function speak(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='zh-CN';u.rate=.8;if(zhVoice)u.voice=zhVoice;speechSynthesis.speak(u)}catch(e){}}
 
 function chips(){
   $('mHz').classList.toggle('on',opt.mode==='hz');$('mUz').classList.toggle('on',opt.mode==='uz');
-  $('cPy').classList.toggle('on',opt.py);$('cSh').classList.toggle('on',opt.sh);$('cSSh').classList.toggle('on',opt.sh);
-  $('cPy').style.display=opt.mode==='hz'?'':'none';
-  document.querySelectorAll('[data-sm]').forEach(c=>c.classList.toggle('on',c.dataset.sm===opt.smode));
-  $('cSPy').classList.toggle('on',opt.spy);
-  document.querySelectorAll('[data-wm]').forEach(c=>c.classList.toggle('on',c.dataset.wm===opt.wmode));
-  $('cWSh').classList.toggle('on',opt.sh);
-  $('cWOrd').classList.toggle('on',!!opt.wstrict);$('cWOrd').style.display=opt.wmode==='see'?'none':'';
+  $('cPy').classList.toggle('on',opt.py);$('cPy').style.display=opt.mode==='hz'?'':'none';
 }
 $('mHz').onclick=()=>{opt.mode='hz';chips();save();if(cur!=null)render()};
 $('mUz').onclick=()=>{opt.mode='uz';chips();save();if(cur!=null)render()};
 $('cPy').onclick=()=>{opt.py=!opt.py;chips();save();if(cur!=null)render()};
-$('cSh').onclick=()=>{opt.sh=!opt.sh;chips();save();start()};
 sel.onchange=()=>{cfg.w=sel.value;save();showTitle();start()};
-
-// ================= GAPLAR =================
-const ssel=$('sset');
-let sq=[],stot=0,sok=0,sbad=0,scur=null,sShown=false,swrong=new Set(),pool=[],pick=[],checked=null,sInit=false;
-function buildSSets(){
-  let h='';
-  for(let l=1;l<=NL;l++){const ix=SN.map((_,i)=>i).filter(i=>SN[i][0]===l);if(!ix.length)continue;const k=ix.filter(i=>SS(i)==='k').length;
-    h+=`<option value="${l}">${l}-dars · ${esc(T[l-1][1])} · ${k}/${ix.length} ✓</option>`}
-  const d=SN.filter((_,i)=>SS(i)==='d').length;
-  h+=`<option value="hard">Qiyin gaplar (${d})</option><option value="all">Hammasi (${SN.length})</option>`;
-  ssel.innerHTML=h;ssel.value=cfg.s;if(!ssel.value){ssel.selectedIndex=0;cfg.s=ssel.value}
-  $('sltitle').innerHTML=lessonTitle(+cfg.s);
-}
-function sIdx(v){const all=SN.map((_,i)=>i);if(v==='all')return all;if(v==='hard')return all.filter(i=>SS(i)==='d');return all.filter(i=>SN[i][0]===+v)}
-function sTokens(s){const zt=s[1].split(' '),pt=s[2].split(' ');return zt.map((z,i)=>({z,p:(pt[i]||'').replace(/_/g,' ')}))}
-function zhText(s){return s[1].replace(/ /g,'')}
-function pyLine(s){let o='',cap=true;sTokens(s).forEach(t=>{if(PUN.test(t.z)){o+=t.p;cap=/[.!?]/.test(t.p)}else{o+=(o?' ':'')+(cap?t.p.charAt(0).toUpperCase()+t.p.slice(1):t.p);cap=false}});return o}
-function sStart(){
-  sInit=true;sq=sIdx(cfg.s);if(opt.sh)shuffle(sq);
-  stot=sq.length;swrong=new Set();sok=0;sbad=0;sNext();
-}
-function sNext(){
-  sShown=false;checked=null;scur=sq.shift();
-  if(scur===undefined)return sFinish();
-  if(opt.smode!=='zh')makePool();
-  sRender();
-  if(opt.smode==='ear')speak(zhText(SN[scur]),.75);
-}
-// bir-birining o'rnini bosa oladigan so'zlar: gapda bittasi bo'lsa, qolganlari chalg'ituvchi bo'lmaydi
-const SWAP=[['我','你','您','他','她','它','我们','你们','他们','她们','它们','大家'],
-  ['一','二','两','三','四','五','六','七','八','九','十','百','千','万','零','几','多少'],
-  ['这','那','哪'],['这个','那个','哪个'],['这儿','那儿','哪儿','这里','那里','哪里'],['这些','那些','哪些'],['这边','那边'],
-  ['很','太','真','非常','最','更','也','都','还','再','就'],['吗','呢','吧','啊','了'],['不','没','没有','别','不要'],
-  ['今天','明天','昨天','今年','明年','去年','早上','上午','中午','下午','晚上','现在'],
-  ['左','右','前','后','东','西','南','北','上','下','里','外'],['想','要','会','能','可以'],['去','来','回','到','走'],
-  ['大','小','多','少','好','高','长','快','慢','远','近','冷','热','贵','便宜'],['和','跟','给','在','从','往','离','比']];
-function makePool(){
-  const s=SN[scur];const t=sTokens(s).filter(x=>!PUN.test(x.z));
-  const joined=t.map(x=>x.z).join('');const have=new Set(t.map(x=>x.z));
-  const ban=new Set();SWAP.forEach(g=>{if(g.some(z=>have.has(z)))g.forEach(z=>ban.add(z))});
-  const n=t.length>=6?3:2;
-  const c=shuffle(W.filter(w=>w[3]<=s[0]&&!have.has(w[0])&&!ban.has(w[0])&&!joined.includes(w[0])&&w[0].length<=4&&!/[…·]/.test(w[0])));
-  c.sort((a,b)=>(b[3]===s[0])-(a[3]===s[0]));
-  const dis=[],seen=new Set();
-  for(const w of c){if(dis.length>=n)break;if(seen.has(w[0]))continue;seen.add(w[0]);dis.push({z:w[0],p:w[1]})}
-  pool=shuffle([...t,...dis]).map((o,i)=>Object.assign({},o,{id:i}));pick=[];
-}
-function tileHTML(t,k,j){return `<button class="tile${k==='p'&&pick.includes(t.id)?' used':''}" data-k="${k}" data-j="${j}">${esc(t.z)}${opt.spy?`<small>${esc(t.p)}</small>`:''}</button>`}
-function sRender(){
-  const s=SN[scur],zh=zhText(s),stg=$('sstage');
-  if(opt.smode==='zh'){
-    stg.innerHTML=`<div class="card sc flip" id="scard"><button class="say" id="ssay" title="Eshitish">🔊</button>
-      <div class="szh" style="margin:0 34px">${esc(zh)}</div>
-      <div class="spy ${opt.spy||sShown?'':'hidden'}">${esc(pyLine(s))}</div>
-      <div class="uz ${sShown?'':'hidden'}" style="margin-top:14px">${esc(s[3])}</div>
-      <div class="hint">${sShown?s[0]+'-dars':'tarjimasini o\'ylang, keyin bosing'}</div></div>
-      <div class="btns"><button class="no" id="sNo" ${sShown?'':'disabled'}>Bilmayman</button><button class="yes" id="sYes" ${sShown?'':'disabled'}>Bilaman</button></div>`;
-    $('scard').onclick=e=>{if(e.target.id==='ssay')return;sFlip()};
-    $('ssay').onclick=e=>{e.stopPropagation();speak(zh,.75)};
-    $('sNo').onclick=()=>sGrade(false);$('sYes').onclick=()=>sGrade(true);
-  }else{
-    const prompt=opt.smode==='uz'
-      ?`<div class="lbl">Xitoychaga tarjima qiling</div><div class="uz sp">${esc(s[3])}</div>`
-      :`<div class="lbl">Eshiting va gapni tuzing</div><button class="replay" id="replay">🔊 Qayta eshitish</button>`;
-    const ans=pick.length?pick.map((id,j)=>tileHTML(pool[id],'a',j)).join(''):'<span class="ph">So\'zlarni to\'g\'ri tartibda bosing</span>';
-    const res=checked===null?'':`<div class="res"><div class="lbl">${checked?'✓ To\'g\'ri!':'To\'g\'ri javob:'}</div><div class="szh">${esc(zh)}</div><div class="spy">${esc(pyLine(s))}</div>${opt.smode==='ear'?`<div class="uz">${esc(s[3])}</div>`:''}</div>`;
-    let btns;
-    if(checked===null)btns=`<div class="btns"><button class="mild" id="sClr" ${pick.length?'':'disabled'}>Tozalash</button><button class="yes" id="sChk" ${pick.length?'':'disabled'}>Tekshirish</button></div>`;
-    else if(checked)btns=`<div class="btns one"><button class="go" id="sGo">Davom →</button></div>`;
-    else btns=`<div class="btns"><button class="mild" id="sOk">Baribir to'g'ri edi</button><button class="go" id="sGo">Davom →</button></div>`;
-    stg.innerHTML=`<div class="card sc"><button class="say" id="ssay" title="Eshitish" ${checked===null?'style="display:none"':''}>🔊</button>${prompt}
-      <div class="ans ${checked===null?'':checked?'ok':'bad'}" id="ans">${ans}</div>${res}</div>
-      ${checked===null?`<div class="tiles" id="pool">${pool.map((t,j)=>tileHTML(t,'p',j)).join('')}</div>`:''}${btns}`;
-    $('ssay').onclick=()=>speak(zh,.75);
-    const rp=$('replay');if(rp)rp.onclick=()=>speak(zh,.75);
-    stg.querySelectorAll('.tile').forEach(b=>b.onclick=()=>tapTile(b.dataset.k,+b.dataset.j));
-    const c=$('sClr');if(c)c.onclick=()=>{pick=[];sRender()};
-    const k=$('sChk');if(k)k.onclick=sCheck;
-    const g=$('sGo');if(g)g.onclick=()=>sGrade(checked);
-    const o=$('sOk');if(o)o.onclick=()=>{checked=true;sGrade(true)};
-  }
-  const done=stot-sq.length-1;$('sprog').style.width=(stot?Math.max(0,done)/stot*100:0)+'%';
-  $('sleft').textContent=`Qoldi: ${sq.length+1}`;$('sscore').textContent=`✓ ${sok}  ·  ✗ ${sbad}`;
-}
-function tapTile(k,j){
-  if(checked!==null)return;
-  if(k==='p'){const t=pool[j];if(pick.includes(t.id))return;pick.push(t.id);speak(t.z,.9)}
-  else pick.splice(j,1);
-  sRender();
-}
-function sCheck(){
-  if(!pick.length||checked!==null)return;
-  const s=SN[scur];
-  const ans=pick.map(id=>pool[id].z).join('');
-  const target=sTokens(s).filter(x=>!PUN.test(x.z)).map(x=>x.z).join('');
-  checked=ans===target||(s[4]||[]).includes(ans);
-  sRender();speak(zhText(s),.75);
-  const g=$('sGo');if(g&&g.scrollIntoView)g.scrollIntoView({block:'nearest',behavior:'smooth'});
-}
-function sFlip(){if(sShown||scur==null)return;sShown=true;sRender();speak(zhText(SN[scur]),.75)}
-function sGrade(y){
-  if(scur==null)return;
-  const k=skey(SN[scur]);const hard=cfg.s==='hard';let msg='';
-  if(y){sok++;if(hard){ss[k]='k';msg='✓ Qiyin gaplardan chiqarildi'}else if(ss[k]!=='d')ss[k]='k'}
-  else{sbad++;swrong.add(scur);if(ss[k]!=='d'&&!hard)msg='＋ Qiyin gaplarga qo\'shildi';ss[k]='d'}
-  save();buildSSets();toast(msg);sNext();
-}
-function sFinish(){
-  scur=null;buildSSets();
-  $('sprog').style.width='100%';$('sleft').textContent='Tugadi';
-  $('sstage').innerHTML=stot?`<div class="card done" style="cursor:default"><div class="big">${stot-swrong.size} / ${stot}</div>
-   <p style="color:var(--mut)">birinchi urinishda to'g'ri · ${swrong.size} ta gap qiyin bo'ldi</p>
-   <div><button class="prim" id="sAgain">Qaytadan</button><button class="prim sec" id="sNx">Keyingi dars →</button></div>
-   ${swrong.size?'<div><button class="prim sec" id="sHard">Qiyin gaplarni takrorlash</button></div>':''}</div>`
-   :`<div class="card done" style="cursor:default"><p>Bu to'plamda gap yo'q.</p><button class="prim" id="sAgain">Qaytadan</button></div>`;
-  $('sAgain').onclick=sStart;
-  const n=$('sNx');if(n)n.onclick=()=>{let v=isNaN(+cfg.s)||!+cfg.s?0:+cfg.s;let nx=null;for(let l=v+1;l<=NL;l++)if(SN.some(s=>s[0]===l)){nx=l;break}
-    cfg.s=String(nx||v||1);save();buildSSets();sStart()};
-  const h=$('sHard');if(h)h.onclick=()=>{cfg.s='hard';save();buildSSets();sStart()};
-}
-function sTip(){
-  $('stip').innerHTML=opt.smode==='zh'
-    ?'Gapni o\'qing va tarjimasini o\'ylang. Kartani bosing yoki <b>Space</b> — tarjima · <b>1</b> bilmayman · <b>2</b> bilaman.'
-    :'Pastdagi so\'zlarni to\'g\'ri tartibda bosing (ortiqcha so\'zlar ham bor). Tuzilgan gapdagi so\'zni bossangiz — qaytadi. <b>Enter</b> — tekshirish/davom, <b>Backspace</b> — oxirgisini o\'chirish.<br>Boshqa to\'g\'ri tartibda tuzgan bo\'lsangiz, "Baribir to\'g\'ri edi"ni bosing.';
-}
-document.querySelectorAll('[data-sm]').forEach(c=>c.onclick=()=>{opt.smode=c.dataset.sm;chips();sTip();save();sStart()});
-$('cSPy').onclick=()=>{opt.spy=!opt.spy;chips();save();if(scur!=null)sRender()};
-$('cSSh').onclick=()=>{opt.sh=!opt.sh;chips();save();sStart()};
-ssel.onchange=()=>{cfg.s=ssel.value;save();buildSSets();sStart()};
-
-// ================= YOZISH =================
-const wsel=$('wset');
-function isCJK(c){return c>='一'&&c<='鿿'}
-function wChars(i){return [...W[i][0]].filter(isCJK)}
-function WS(i){return wst[wkey(W[i])]}
-function wIdx(v){
-  const all=W.map((_,i)=>i).filter(i=>wChars(i).length);
-  if(v==='all')return all;if(v==='hard')return all.filter(i=>WS(i)==='d');if(v==='new')return all.filter(i=>!WS(i));
-  return all.filter(i=>W[i][3]===+v);
-}
-function buildWSets(){
-  let h='';
-  for(let l=1;l<=NL;l++){const ix=wIdx(String(l));if(!ix.length)continue;const k=ix.filter(i=>WS(i)==='k').length;
-    h+=`<option value="${l}">${l}-dars · ${esc(T[l-1][1])} · ${k}/${ix.length} ✓</option>`}
-  h+=`<option value="hard">Yozishda qiyin (${wIdx('hard').length})</option><option value="new">Hali yozilmaganlar</option><option value="all">Hammasi (${wIdx('all').length})</option>`;
-  wsel.innerHTML=h;wsel.value=cfg.y;if(!wsel.value){wsel.selectedIndex=0;cfg.y=wsel.value}
-  $('wltitle').innerHTML=lessonTitle(+cfg.y);
-}
-let wq=[],wtot=0,wok=0,wbad=0,wcur=null,wci=0,wmis=0,wdone=false,whelp=false,writer=null,wInit=false,wTok=0,wGraded=false;
-function hwColors(){const cs=getComputedStyle(document.documentElement);const g=n=>cs.getPropertyValue(n).trim();
-  return{strokeColor:g('--ink'),outlineColor:g('--line'),drawingColor:g('--red'),highlightColor:g('--green')}}
-function loadChar(c,onLoad,onErr){
-  fetch('hanzi/'+c.codePointAt(0).toString(16)+'.json').then(r=>{if(!r.ok)throw new Error(r.status);return r.json()}).then(onLoad).catch(onErr);
-}
-function wStart(){wInit=true;wq=wIdx(cfg.y);if(opt.sh)shuffle(wq);wtot=wq.length;wok=0;wbad=0;wNext()}
-function wNext(){
-  wTok++;wcur=wq.shift();wci=0;wmis=0;wdone=false;whelp=false;wGraded=false;
-  if(wcur===undefined)return wFinish();
-  wChar();
-}
-function wStop(){wTok++;try{if(writer){writer.cancelQuiz();writer.pauseAnimation()}}catch(e){}}
-function wRender(){
-  const [h,p,u]=W[wcur];const ch=wChars(wcur);const mem=opt.wmode==='mem';
-  const word=ch.map((c,j)=>{const vis=!mem||j<wci||wdone;
-    return `<button class="wc${j===wci&&!wdone?' on':''}${j<wci||wdone&&opt.wmode!=='see'?' ok':''}" data-j="${j}">${vis?esc(c):'？'}</button>`}).join('');
-  $('wstage').innerHTML=`<div class="card sc wcard">
-    <div class="wword">${word}</div>
-    <div class="spy" style="margin-top:2px">${esc(p)}</div>
-    <div class="uz" style="margin-top:2px;font-size:17px">${esc(u)}</div>
-    <div class="wbox" id="wbox"><svg class="grid" viewBox="0 0 100 100" preserveAspectRatio="none"><rect x="0.5" y="0.5" width="99" height="99" rx="3"/><line x1="0" y1="50" x2="100" y2="50"/><line x1="50" y1="0" x2="50" y2="100"/><line x1="0" y1="0" x2="100" y2="100"/><line x1="100" y1="0" x2="0" y2="100"/></svg><div id="wtarget"></div></div>
-    <div class="wmsg" id="wmsg"></div>
-  </div><div class="btns" id="wbtns"></div>`;
-  $('wstage').querySelectorAll('.wc').forEach(b=>b.onclick=()=>{
-    const j=+b.dataset.j;
-    if(opt.wmode==='see'||wdone){wci=j;wdone=false;wChar()}
-    else if(j<wci){wci=j;wChar()}   // yozilganini qayta mashq qilish
-  });
-  const done=wtot-wq.length-1;$('wprog').style.width=(wtot?Math.max(0,done)/wtot*100:0)+'%';
-  $('wleft').textContent=`Qoldi: ${wq.length+1}`;$('wscore').textContent=`✓ ${wok}  ·  ✗ ${wbad}`;
-  wButtons();
-}
-function wButtons(){
-  const b=$('wbtns');if(!b)return;
-  if(opt.wmode==='see'){
-    b.className='btns';
-    b.innerHTML=`<button class="mild" id="wTry">✍️ Yozib ko'rish</button><button class="go" id="wGo">Keyingi →</button>`;
-    $('wTry').onclick=()=>setWMode('guide');
-    $('wGo').onclick=wNext;
-  }else if(wdone){
-    b.className='btns';
-    b.innerHTML=`<button class="mild" id="wAgain">↺ Yana yozish</button><button class="go" id="wGo">Keyingi →</button>`;
-    $('wAgain').onclick=()=>{wci=0;wmis=0;wdone=false;whelp=false;wChar()};
-    $('wGo').onclick=wNext;
-  }else{
-    b.className='btns';
-    b.innerHTML=`<button class="mild" id="wHint">💡 Ko'rsatish</button><button class="mild" id="wReset">↺ Qaytadan</button>`;
-    $('wHint').onclick=wHint;
-    $('wReset').onclick=()=>wChar();
-  }
-}
-function wChar(){
-  wStop();const tok=wTok;
-  wRender();
-  const c=wChars(wcur)[wci];const box=$('wbox');
-  const size=Math.round(box.clientWidth)||280;
-  writer=HanziWriter.create($('wtarget'),c,Object.assign({
-    width:size,height:size,padding:Math.round(size*.05),
-    showOutline:opt.wmode!=='mem',showCharacter:opt.wmode==='see'||wdone,
-    strokeAnimationSpeed:1,delayBetweenStrokes:250,delayBetweenLoops:1600,
-    drawingWidth:Math.max(14,Math.round(size/14)),
-    charDataLoader:loadChar,
-    onLoadCharDataError:()=>{if(tok===wTok)$('wmsg').textContent="Bu ieroglif uchun ma'lumot topilmadi"}
-  },hwColors()));
-  if(wdone)return;
-  if(opt.wmode==='see'){
-    writer.loopCharacterAnimation();
-    box.onclick=()=>{if(tok===wTok){writer.pauseAnimation();writer.loopCharacterAnimation()}};
-  }else startQuiz(tok);
-}
-// ---- erkin tartib: chiziqlarni istalgan tartibda yozish ----
-const charCache={};
-function getChar(c){return charCache[c]||(charCache[c]=new Promise((ok,err)=>loadChar(c,ok,err)))}
-function plen(p){let l=0;for(let i=1;i<p.length;i++)l+=Math.hypot(p[i][0]-p[i-1][0],p[i][1]-p[i-1][1]);return l}
-function resample(p,n){
-  if(p.length===1)return Array(n).fill(p[0]);
-  const L=plen(p),out=[p[0]];let acc=0,j=1;const step=L/(n-1);
-  for(let k=1;k<n-1;k++){
-    const target=k*step;
-    while(j<p.length){const d=Math.hypot(p[j][0]-p[j-1][0],p[j][1]-p[j-1][1]);
-      if(acc+d>=target){const t=d?(target-acc)/d:0;out.push([p[j-1][0]+(p[j][0]-p[j-1][0])*t,p[j-1][1]+(p[j][1]-p[j-1][1])*t]);break}
-      acc+=d;j++}
-    if(out.length<=k)out.push(p[p.length-1]);
-  }
-  out.push(p[p.length-1]);return out;
-}
-function strokeDist(u,m){
-  const N=16,a=resample(u,N),b=resample(m,N);
-  let f=0,r=0;for(let i=0;i<N;i++){f+=Math.hypot(a[i][0]-b[i][0],a[i][1]-b[i][1]);r+=Math.hypot(a[i][0]-b[N-1-i][0],a[i][1]-b[N-1-i][1])}
-  return Math.min(f/N,r/N+15);   // teskari yo'nalish ham qabul qilinadi
-}
-let free=null;
-// o'rtacha og'ish chegarasi (1024 birlikli katakda; ~25px telefonda). Sinovlarda: to'g'ri yozuv 99% <58, qo'polroq yozuv 90% <95.
-const FREE_TOL=90;
-function startFree(tok){
-  const c=wChars(wcur)[wci];
-  getChar(c).then(data=>{if(tok!==wTok)return;free={tok,data,done:new Set(),mis:0,miss:0};buildOverlay()}).catch(()=>{});
-}
-function buildOverlay(){
-  const box=$('wbox');if(!box||!free)return;
-  const size=Math.round(box.clientWidth)||280,pad=Math.round(size*.05),s=(size-2*pad)/1024,xo=pad,yo=124*s+pad;
-  const col=hwColors();const NS='http://www.w3.org/2000/svg';
-  const ov=document.createElementNS(NS,'svg');ov.id='wover';ov.setAttribute('width',size);ov.setAttribute('height',size);
-  ov.innerHTML=`<g id="wovg" transform="translate(${xo},${size-yo}) scale(${s},${-s})"></g><polyline id="wline" fill="none" stroke="${col.drawingColor}" stroke-width="${Math.max(6,Math.round(size/26))}" stroke-linecap="round" stroke-linejoin="round" style="transition:opacity .35s"/>`;
-  box.appendChild(ov);
-  free.geo={size,s,xo,yo};
-  let pts=null;const line=ov.querySelector('#wline');
-  const toPt=e=>{const r=ov.getBoundingClientRect();return[(e.clientX-r.left)*size/r.width,(e.clientY-r.top)*size/r.height]};
-  const draw=()=>{line.style.opacity=1;line.setAttribute('stroke',col.drawingColor);line.setAttribute('points',pts.map(p=>p.join(',')).join(' '))};
-  ov.onpointerdown=e=>{if(!free||free.tok!==wTok)return;e.preventDefault();try{ov.setPointerCapture(e.pointerId)}catch(x){}pts=[toPt(e)];draw()};
-  ov.onpointermove=e=>{if(!pts)return;e.preventDefault();pts.push(toPt(e));draw()};
-  ov.onpointerup=ov.onpointercancel=e=>{if(!pts)return;const p=pts;pts=null;freeStroke(p,line)};
-}
-function freeStroke(p,line){
-  if(!free||free.tok!==wTok)return;
-  const {data,geo}=free;const {size,s,xo,yo}=geo;
-  if(p.length<2||plen(p)<4){line.setAttribute('points','');return}   // shunchaki bosish — e'tiborsiz
-  const cp=p.map(([x,y])=>[(x-xo)/s,(size-yo-y)/s]);
-  let best=-1,bd=1e9;
-  data.medians.forEach((m,i)=>{if(free.done.has(i))return;const d=strokeDist(cp,m);if(d<bd){bd=d;best=i}});
-  const ul=plen(resample(cp,16)),ml=best>=0?plen(data.medians[best]):0;   // silliqlangan uzunlik (titrashga chidamli)
-  const ok=best>=0&&bd<FREE_TOL&&ul>ml*.35&&ul<ml*2.2+120;
-  const m=$('wmsg');
-  if(ok){
-    free.done.add(best);free.miss=0;
-    const NS='http://www.w3.org/2000/svg',path=document.createElementNS(NS,'path');
-    path.setAttribute('d',data.strokes[best]);path.setAttribute('fill',hwColors().strokeColor);
-    $('wovg').appendChild(path);line.setAttribute('points','');
-    m.className='wmsg';m.textContent='';
-    if(free.done.size===data.strokes.length)freeComplete();
-  }else{
-    free.mis++;free.miss++;
-    line.setAttribute('stroke',getComputedStyle(document.documentElement).getPropertyValue('--red').trim());
-    line.style.opacity=0;setTimeout(()=>{if(line.style.opacity==='0')line.setAttribute('points','')},380);
-    m.className='wmsg bad';m.textContent='Bu chiziq emas — qayta urinib ko\'ring';
-    if(free.miss>=(opt.wmode==='mem'?3:2)){free.miss=0;freeFlashHint()}
-  }
-}
-function freeFlashHint(){
-  // hali yozilmagan chiziqlardan birinchisini (to'g'ri tartib bo'yicha) qisqa yondiradi
-  const {data}=free;let i=0;while(free.done.has(i))i++;if(i>=data.strokes.length)return;
-  const NS='http://www.w3.org/2000/svg',path=document.createElementNS(NS,'path');
-  path.setAttribute('d',data.strokes[i]);path.setAttribute('fill',hwColors().highlightColor);
-  path.style.transition='opacity .9s';path.style.opacity='.9';
-  $('wovg').appendChild(path);
-  setTimeout(()=>{path.style.opacity='0'},350);setTimeout(()=>path.remove(),1400);
-}
-function freeComplete(){
-  const tok=wTok;wmis+=free.mis;
-  $('wovg').querySelectorAll('path').forEach(p=>p.setAttribute('fill',hwColors().highlightColor));
-  if(wci+1<wChars(wcur).length){const m=$('wmsg');m.className='wmsg ok';m.textContent='✓';setTimeout(()=>{if(tok===wTok){wci++;wChar()}},650)}
-  else setTimeout(()=>{if(tok===wTok)wWordDone()},450);
-}
-function startQuiz(tok){
-  if(!opt.wstrict)return startFree(tok);
-  writer.quiz({
-    showHintAfterMisses:opt.wmode==='mem'?3:2,highlightOnComplete:true,leniency:1.15,
-    onMistake:()=>{if(tok===wTok){const m=$('wmsg');m.className='wmsg bad';m.textContent='Bu chiziq emas — qayta urinib ko\'ring'}},
-    onCorrectStroke:()=>{if(tok===wTok){const m=$('wmsg');m.className='wmsg';m.textContent=''}},
-    onComplete:d=>{
-      if(tok!==wTok)return;wmis+=d.totalMistakes;
-      if(wci+1<wChars(wcur).length){const m=$('wmsg');m.className='wmsg ok';m.textContent='✓';setTimeout(()=>{if(tok===wTok){wci++;wChar()}},650)}
-      else setTimeout(()=>{if(tok===wTok)wWordDone()},450);
-    }
-  });
-}
-function wHint(){
-  if(!writer||wdone)return;whelp=true;const tok=wTok;
-  if(opt.wstrict)writer.cancelQuiz();
-  writer.animateCharacter({onComplete:()=>{if(tok!==wTok)return;setTimeout(()=>{if(tok!==wTok)return;writer.hideCharacter();if(opt.wstrict)startQuiz(tok)},500)}});
-  const m=$('wmsg');m.className='wmsg';m.textContent='Chiziqlar tartibiga qarang, keyin o\'zingiz yozing';
-}
-function wWordDone(){
-  wdone=true;
-  const good=wmis<=1&&!whelp;const k=wkey(W[wcur]);const hard=cfg.y==='hard';
-  if(!wGraded){
-    wGraded=true;
-    if(good){wok++;if(hard||WS(wcur)!=='d')wst[k]='k'}
-    else{wbad++;wst[k]='d'}
-    save();buildWSets();
-  }
-  wChar();   // butun ieroglifni ko'rsatadi
-  const m=$('wmsg');
-  m.className='wmsg '+(good?'ok':'bad');
-  m.textContent=good?(wmis?'✓ Yaxshi! 1 ta xato':'✓ Zo\'r! Xatosiz'):`${wmis} ta xato${whelp?' · yordam ishlatildi':''} — "Yozishda qiyin"ga qo'shildi`;
-  speak(W[wcur][0]);
-}
-function wFinish(){
-  wcur=null;buildWSets();
-  $('wprog').style.width='100%';$('wleft').textContent='Tugadi';
-  const tried=wok+wbad;
-  $('wstage').innerHTML=wtot?`<div class="card done" style="cursor:default"><div class="big">${opt.wmode==='see'?wtot:wok+' / '+tried}</div>
-   <p style="color:var(--mut)">${opt.wmode==='see'?'ta so\'z ko\'rib chiqildi':'so\'z yaxshi yozildi'}</p>
-   <div><button class="prim" id="wAg">Qaytadan</button><button class="prim sec" id="wNx">Keyingi dars →</button></div>
-   ${wbad?'<div><button class="prim sec" id="wHd">Qiyinlarni takrorlash</button></div>':''}</div>`
-   :`<div class="card done" style="cursor:default"><p>Bu to'plamda so'z yo'q.</p><button class="prim" id="wAg">Qaytadan</button></div>`;
-  $('wAg').onclick=wStart;
-  const n=$('wNx');if(n)n.onclick=()=>{const v=isNaN(+cfg.y)||!+cfg.y?0:+cfg.y;let nx=null;for(let l=v+1;l<=NL;l++)if(wIdx(String(l)).length){nx=l;break}
-    cfg.y=String(nx||v||1);save();buildWSets();wStart()};
-  const h=$('wHd');if(h)h.onclick=()=>{cfg.y='hard';save();buildWSets();wStart()};
-}
-function wTip(){
-  $('wtip').innerHTML={
-    see:'Ieroglif qanday yozilishi animatsiyada ko\'rsatiladi (chiziqlar tartibi bilan). Katakni bossangiz — qaytadan boshlaydi. So\'zdagi boshqa ieroglifni ko\'rish uchun yuqoridagi harfni bosing.',
-    guide:'Kulrang andoza ustidan barmoq yoki sichqoncha bilan chiziqlarni chizing. 2 marta xato qilsangiz, to\'g\'ri chiziq yonib ko\'rsatiladi.',
-    mem:'Ieroglifni <b>yoddan</b> yozing — andoza yo\'q. 3 marta xato qilsangiz, yordam chiqadi. 0–1 xato — "bilaman", ko\'proq xato yoki "Ko\'rsatish" — "Yozishda qiyin".'
-  }[opt.wmode]+(opt.wmode==='see'?'':opt.wstrict?' <b>Tartib bilan</b> yoqilgan: chiziqlarni faqat to\'g\'ri tartibda qabul qiladi.':' Chiziqlarni <b>istalgan tartibda</b> yozishingiz mumkin ("Tartib bilan" — qat\'iy tartibni yoqadi).')+' <b>Enter</b> — keyingi so\'z.';
-}
-function setWMode(m){opt.wmode=m;chips();wTip();save();if(wcur!=null){wci=0;wmis=0;wdone=false;whelp=false;wGraded=false;wChar()}else wStart()}
-document.querySelectorAll('[data-wm]').forEach(c=>c.onclick=()=>setWMode(c.dataset.wm));
-$('cWSh').onclick=()=>{opt.sh=!opt.sh;chips();save();wStart()};
-$('cWOrd').onclick=()=>{opt.wstrict=!opt.wstrict;chips();wTip();save();if(wcur!=null&&!wdone)wChar()};
-wsel.onchange=()=>{cfg.y=wsel.value;save();buildWSets();wStart()};
-
-// ---- klaviatura ----
 document.addEventListener('keydown',e=>{
-  const tg=e.target.tagName;if(tg==='INPUT'||tg==='SELECT'||tg==='TEXTAREA')return;
-  if(opt.view==='study'){
-    if(e.code==='Space'||e.key==='Enter'){e.preventDefault();flip()}
-    else if(e.key==='1'||e.key==='ArrowLeft')answer(false);
-    else if(e.key==='2'||e.key==='ArrowRight')answer(true);
-  }else if(opt.view==='write'&&wcur!=null){
-    if(e.key==='Enter'&&(wdone||opt.wmode==='see')){e.preventDefault();wNext()}
-  }else if(opt.view==='sent'&&scur!=null){
-    if(opt.smode==='zh'){
-      if(e.code==='Space'||e.key==='Enter'){e.preventDefault();sFlip()}
-      else if(sShown&&(e.key==='1'||e.key==='ArrowLeft'))sGrade(false);
-      else if(sShown&&(e.key==='2'||e.key==='ArrowRight'))sGrade(true);
-    }else{
-      if(e.key==='Enter'){e.preventDefault();if(checked===null)sCheck();else sGrade(checked)}
-      else if(e.key==='Backspace'&&checked===null&&pick.length){e.preventDefault();pick.pop();sRender()}
-    }
-  }
+  const tg=e.target.tagName;if(tg==='INPUT'||tg==='SELECT'||tg==='TEXTAREA'||opt.view!=='study')return;
+  if(e.code==='Space'||e.key==='Enter'){e.preventDefault();flip()}
+  else if(e.key==='1'||e.key==='ArrowLeft')answer(false);
+  else if(e.key==='2'||e.key==='ArrowRight')answer(true);
 });
 
 // ================= RO'YXAT =================
 let filt='all';
+function cat(i){const s=P(i);return s==null?'n':s<0?'d':s>=PT.learned?'l':'m'}
 function drawList(){
   const s=$('q').value.trim().toLowerCase();
   const norm=x=>x.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
   const ns=norm(s).replace(/\s/g,'');
-  let k=0,d=0;W.forEach((_,i)=>{if(S(i)==='k')k++;else if(S(i)==='d')d++});
-  $('sK').textContent=k;$('sD').textContent=d;$('sN').textContent=W.length-k-d;
+  const cnt={l:0,m:0,d:0,n:0};W.forEach((_,i)=>cnt[cat(i)]++);
+  $('sL').textContent=cnt.l;$('sM').textContent=cnt.m;$('sD').textContent=cnt.d;$('sN').textContent=cnt.n;
   let h='',c=0,lastL=0;
   W.forEach(([hz,p,u,l,star],i)=>{
-    const v=S(i)||'n';if(filt!=='all'&&v!==filt)return;
+    if(filt!=='all'&&cat(i)!==filt)return;
     if(s&&!(hz.includes(s)||norm(p).replace(/\s/g,'').includes(ns)||u.toLowerCase().includes(s)))return;
     if(++c>800)return;
     if(l!==lastL){lastL=l;h+=`<div class="lh">${l}-dars · ${esc(T[l-1][0])} — ${esc(T[l-1][1])}</div>`}
-    h+=`<div class="li" data-i="${i}"><div class="h">${esc(hz)}${star?'<sup>★</sup>':''}</div><div><div class="p">${esc(p)}</div><div class="u">${esc(u)}</div></div><span class="st ${v}">${v==='k'?'bilaman':v==='d'?'qiyin':'—'}</span></div>`;
+    const sc=P(i);
+    h+=`<div class="li" data-i="${i}"><div class="h">${esc(hz)}${star?'<sup>★</sup>':''}</div><div><div class="p">${esc(p)}</div><div class="u">${esc(u)}</div></div><span class="pts ${ptCls(sc)}">${ptLabel(sc)}</span></div>`;
   });
   $('list').innerHTML=h||'<div class="li" style="display:block;color:var(--mut)">Hech narsa topilmadi</div>';
 }
 $('list').onclick=e=>{const r=e.target.closest('.li');if(r&&r.dataset.i)speak(W[r.dataset.i][0])};
 $('q').oninput=drawList;
 document.querySelectorAll('[data-f]').forEach(c=>c.onclick=()=>{filt=c.dataset.f;document.querySelectorAll('[data-f]').forEach(x=>x.classList.toggle('on',x===c));drawList()});
-$('reset').onclick=()=>{const b=$('reset');if(b.dataset.c){st={};ss={};wst={};save();buildSets();buildSSets();buildWSets();drawList();b.textContent='Shu kitob natijalarini tozalash';delete b.dataset.c}else{b.dataset.c=1;b.textContent='Ishonchingiz komilmi? Yana bosing'}};
+$('reset').onclick=()=>{const b=$('reset');if(b.dataset.c){pts={};lsSet(B.store,{});save();buildSets();drawList();start();b.textContent='Shu kitob ballarini tozalash';delete b.dataset.c}else{b.dataset.c=1;b.textContent='Ishonchingiz komilmi? Yana bosing'}};
 
 // ================= TABLAR VA KITOB =================
-const VIEWS={study:'tStudy',sent:'tSent',write:'tWrite',listv:'tList'};
 function show(v){
-  if(opt.view==='write'&&v!=='write')wStop();
   opt.view=v;
-  for(const k in VIEWS){$(k).style.display=k===v?'':'none';$(VIEWS[k]).classList.toggle('on',k===v)}
-  if(v==='study'){buildSets()}
-  if(v==='sent'){buildSSets();if(!sInit)sStart()}
-  if(v==='write'){buildWSets();if(!wInit)wStart();else if(wcur!=null)wChar()}
+  $('study').style.display=v==='study'?'':'none';$('listv').style.display=v==='listv'?'':'none';
+  $('tStudy').classList.toggle('on',v==='study');$('tList').classList.toggle('on',v==='listv');
+  if(v==='study'){buildSets();if(cur!=null)render();else progress()}
   if(v==='listv')drawList();
   lsSet('hsk1bookopt',opt);
 }
 $('tStudy').onclick=()=>show('study');
-$('tSent').onclick=()=>show('sent');
-$('tWrite').onclick=()=>show('write');
 $('tList').onclick=()=>show('listv');
 $('book').innerHTML=BOOKS.map(b=>`<option value="${b.id}">${esc(b.title)}</option>`).join('');
-$('book').onchange=()=>{
-  loadBook($('book').value);save();
-  buildSets();buildSSets();buildWSets();start();sInit=false;scur=null;
-  wStop();wInit=false;wcur=null;
-  if(opt.view==='sent')sStart();
-  if(opt.view==='write')wStart();
-  if(opt.view==='listv')drawList();
-  cloudLoad();
-};
+$('book').onchange=()=>{loadBook($('book').value);save();buildSets();start();if(opt.view==='listv')drawList();cloudLoad()};
 
+$('tipK').textContent='+'+PT.known;$('tipD').textContent=String(PT.unknown);$('tipL').textContent=PT.learned;
 if(TG){try{TG.ready();TG.expand();if(TG.disableVerticalSwipes)TG.disableVerticalSwipes();if(TG.colorScheme==='dark')document.documentElement.classList.add('dark')}catch(e){}}
-loadBook(opt.book);chips();sTip();wTip();buildSets();buildSSets();buildWSets();start();
-show(['study','sent','write','listv'].includes(opt.view)?opt.view:'study');
+loadBook(opt.book);chips();buildSets();start();show(opt.view);
 cloudLoad();
 </script>
 </body>
