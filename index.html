@@ -67,6 +67,16 @@ select{flex:1;min-width:0}
 .lh{background:var(--soft);font-size:13px;font-weight:600;padding:9px 12px;border-bottom:1px solid var(--line)}
 .li .h sup{font-size:10px;color:var(--mut)}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--red);color:#fff;font:600 14px Inter,sans-serif;padding:10px 16px;border-radius:999px;opacity:0;transition:.2s;pointer-events:none;z-index:9;white-space:nowrap}.toast.ok{background:var(--green)}.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.fbar{display:flex;align-items:center;gap:8px;width:100%;text-align:left;font:500 12px Inter,sans-serif;color:var(--amber);background:var(--midbg);border:0;border-radius:10px;padding:9px 11px;margin-bottom:12px;cursor:pointer}
+.fbar span{flex:1}
+.grp{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.grp h3{margin:0 0 3px;font-size:15px}
+.grp p{margin:0 0 10px;font-size:12px;color:var(--mut);line-height:1.45}
+.grp .row{margin-bottom:0}
+.grp .chip{font-family:Inter,sans-serif}
+.grp .chip.ls{min-width:42px;text-align:center}
+.fcount{font-size:14px;font-weight:600;text-align:center;margin:4px 0 12px}
+.fcount b{color:var(--green)}
 .tip{font-size:12px;color:var(--mut);text-align:center;margin-top:14px;line-height:1.5}
 </style>
 </head>
@@ -74,7 +84,7 @@ select{flex:1;min-width:0}
 <div class="wrap">
 <header>
   <div class="bookrow"><span class="logo">汉</span><select id="book" aria-label="Kitob"></select></div>
-  <div class="tabs"><button id="tStudy" class="on">Kartalar</button><button id="tList">Ro'yxat</button></div>
+  <div class="tabs"><button id="tStudy" class="on">Kartalar</button><button id="tList">Ro'yxat</button><button id="tSet">Sozlamalar</button></div>
 </header>
 
 <section id="study">
@@ -87,6 +97,7 @@ select{flex:1;min-width:0}
     <span class="chip" id="cPy">Pinyin oldindan</span>
   </div>
   <div id="ltitle" class="ltitle"></div>
+  <button class="fbar" id="fbar" style="display:none"><span id="fbarT"></span>O'zgartirish ›</button>
   <div class="bar"><i id="prog"></i></div>
   <div class="meta"><span id="left"></span><span id="score"></span></div>
   <div id="stage"></div>
@@ -101,13 +112,18 @@ select{flex:1;min-width:0}
   <div class="list" id="list"></div>
   <p class="tip"><button class="prim sec" id="reset">Shu kitob ballarini tozalash</button></p>
 </section>
+<section id="setv" style="display:none">
+  <div class="fcount" id="fcount"></div>
+  <div id="setBody"></div>
+  <p class="tip"><button class="prim sec" id="fReset">Standart sozlamalarga qaytarish</button></p>
+</section>
 <p class="tip" id="nostore" style="display:none;color:var(--red)">Bu brauzer natijalarni saqlashga ruxsat bermayapti — sahifani yopsangiz, ballar yo'qoladi.</p>
 <div id="toast" class="toast"></div>
 </div>
 
-<script src="books/xin1.js?v=3"></script>
-<script src="books/xin2.js?v=3"></script>
-<script src="books/s360_1.js?v=3"></script>
+<script src="books/xin1.js?v=4"></script>
+<script src="books/xin2.js?v=4"></script>
+<script src="books/s360_1.js?v=4"></script>
 <script>
 const BOOKS=window.BOOKS||[];
 const $=id=>document.getElementById(id);
@@ -138,7 +154,24 @@ function ptLabel(s){return s==null?'yangi':(s>0?'+':'')+s+' ball'}
 let opt=Object.assign({mode:'hz',py:false,book:BOOKS[0].id,sets:{},view:'study'},lsGet('hsk1bookopt',{}));
 if(!opt.sets||typeof opt.sets!=='object')opt.sets={};
 if(opt.set&&!opt.sets.xin1)opt.sets.xin1={w:opt.set};
-if(!['study','listv'].includes(opt.view))opt.view='study';
+if(!['study','listv','setv'].includes(opt.view))opt.view='study';
+
+// ================= SOZLAMALAR =================
+const FDEF={n:true,d:true,m:true,l:true,star:'all',len:'all',order:'pts',limit:0,voice:'uz',learned:5,unknown:-2};
+let F=opt.f=Object.assign({},FDEF,opt.f);
+// [kalit, sarlavha, izoh, variantlar] — kalit massiv bo'lsa, bir nechtasini tanlash mumkin
+const SETS_UI=[
+  [['n','d','m','l'],"Qaysi so'zlar chiqsin","Masalan, o'rganib bo'lingan so'zlarni yashirish uchun \"O'rganilgan\"ni o'chiring.",[['n','Yangi'],['d','Qiyin'],['m',"O'rganilmoqda"],['l',"O'rganilgan"]]],
+  ['lessons',"Bir nechta darsni birga o'rganish","Darslarni belgilang. Ular Kartalar bo'limida \"Tanlangan darslar\" to'plami bo'ladi.",[]],
+  ['limit',"Yangi so'zlar chegarasi","Bir vaqtda o'rganilayotgan so'zlar shu songa yetsa, yangi so'z chiqmay turadi.",[[0,'Cheksiz'],[5,'5 ta'],[10,'10 ta'],[20,'20 ta']]],
+  ['order','Chiqish tartibi','',[['pts',"Ball bo'yicha"],['book','Kitob tartibida'],['rand','Tasodifiy']]],
+  ['star',"★ qo'shimcha so'zlar",'',[['all',"Ko'rsatish"],['no','Yashirish'],['only','Faqat ★']]],
+  ['len',"So'z uzunligi",'',[['all','Hammasi'],['1','1 ieroglif'],['2','2 ieroglif'],['3','3 va undan ko\'p']]],
+  ['voice',"Avtomatik talaffuz",'',[['off',"O'chiq"],['uz',"O'zbekcha → 汉 javobida"],['show','Javob ochilganda'],['new','Karta chiqqanda']]],
+  ['learned',"Nechta ballda o'rganilgan bo'ladi",'',[[3,'3 ball'],[5,'5 ball'],[8,'8 ball'],[10,'10 ball']]],
+  ['unknown','"Bilmayman" uchun','',[[-1,'−1 ball'],[-2,'−2 ball'],[-3,'−3 ball']]]
+];
+function applyF(){PT.learned=F.learned;PT.unknown=F.unknown;$('tipK').textContent='+'+PT.known;$('tipD').textContent='−'+Math.abs(PT.unknown);$('tipL').textContent=PT.learned}
 
 // ---- joriy kitob ----
 let B,W,T,NL,pts,cfg;
@@ -165,14 +198,16 @@ function save(){
 // ---- Telegram CloudStorage: har bir so'z balli bitta harf (a = -5 ... p = +10, "-" = yangi) ----
 function ckP(){return 'b_'+B.id}
 function packPts(){return W.map(w=>{const v=pts[wkey(w)];return v==null?'-':String.fromCharCode(97+v-PT.min)}).join('')}
-function unpackPts(s){const o={};W.forEach((w,i)=>{const c=s.charCodeAt(i)-97;if(c>=0&&c<=PT.max-PT.min)o[wkey(w)]=c+PT.min});return o}
+function unpackPts(s,ws){const o={};(ws||W).forEach((w,i)=>{const c=s.charCodeAt(i)-97;if(c>=0&&c<=PT.max-PT.min)o[wkey(w)]=c+PT.min});return o}
 function cloudSave(){if(!CS)return;try{CS.setItem(ckP(),packPts())}catch(e){}}
 function cloudLoad(){
   if(!CS)return;const id=B.id;
   try{CS.getItems([ckP(),B.cloud],(err,v)=>{
     if(err||!v||B.id!==id)return;
     const a=v[ckP()],old=v[B.cloud];let ch=false;
+    const oldW=B.added?W.filter(w=>!B.added.includes(wkey(w))):W; // so'z qo'shilishidan oldingi ro'yxat
     if(a&&a.length===W.length){pts=unpackPts(a);ch=true}
+    else if(a&&a.length===oldW.length){pts=Object.assign({},pts,unpackPts(a,oldW));ch=true}
     else if(old&&old.length===W.length&&!Object.keys(pts).length){ // eski bulut ma'lumotidan ko'chirish
       W.forEach((w,i)=>{if(old[i]==='k')pts[wkey(w)]=2;else if(old[i]==='d')pts[wkey(w)]=-2});ch=true}
     lsSet(B.store+'_pts',pts);cloudSave();
@@ -187,7 +222,25 @@ function idxFor(s){
   if(s==='all')return all;
   if(s==='hard')return all.filter(i=>P(i)!=null&&P(i)<0);
   if(s==='new')return all.filter(i=>P(i)==null);
+  if(s==='sel')return all.filter(i=>selL().includes(W[i][3]));
   return all.filter(i=>W[i][3]===+s);
+}
+function selL(){return Array.isArray(cfg.ls)?cfg.ls:[]}
+// sozlamalardagi filtrlar. "Qiyin" va "ko'rilmagan" to'plamlarida holat filtri qo'llanmaydi (to'plamning o'zi holat).
+function passF(i,skipState){
+  const w=W[i],n=[...w[0]].filter(c=>c>='\u4e00'&&c<='\u9fff').length;
+  if(F.star==='no'&&w[4]||F.star==='only'&&!w[4])return false;
+  if(F.len==='3'?n<3:F.len!=='all'&&n!==+F.len)return false;
+  return skipState||F[cat(i)];
+}
+function pool(s){
+  const fixed=s==='hard'||s==='new';
+  const ix=idxFor(s).filter(i=>passF(i,fixed));
+  if(!F.limit||fixed)return ix;
+  // chegara shu to'plamda o'rganilayotgan BARCHA so'zlar bo'yicha hisoblanadi; doim kamida bitta karta qoladi
+  let free=F.limit-idxFor(s).filter(i=>{const c=cat(i);return c==='m'||c==='d'}).length;
+  const out=ix.filter(i=>cat(i)!=='n'||free-->0);
+  return out.length?out:ix;
 }
 // to'plamni bilish darajasi: har so'z 0..learned ball oralig'ida hisoblanadi
 function mastery(ix){if(!ix.length)return 0;let t=0;ix.forEach(i=>{const s=P(i);t+=s==null?0:Math.max(0,Math.min(PT.learned,s))});return Math.round(t/(ix.length*PT.learned)*100)}
@@ -195,6 +248,7 @@ function buildSets(){
   let h='';
   for(let l=1;l<=NL;l++){const ix=idxFor(String(l));if(!ix.length)continue;
     h+=`<option value="${l}">${l}-dars · ${esc(T[l-1][1])} · ${mastery(ix)}%</option>`}
+  if(selL().length)h+=`<option value="sel">Tanlangan darslar: ${selL().join(', ')} · ${mastery(idxFor('sel'))}%</option>`;
   h+=`<option value="hard">Qiyin so'zlar — ball manfiy (${idxFor('hard').length})</option>`;
   h+=`<option value="new">Hali ko'rilmaganlar (${idxFor('new').length})</option><option value="all">Hammasi (${W.length}) · ${mastery(idxFor('all'))}%</option>`;
   sel.innerHTML=h;sel.value=cfg.w;if(!sel.value){sel.value='1';cfg.w='1'}
@@ -203,26 +257,29 @@ function buildSets(){
 function lessonTitle(l){return l?`<span class="lt-n">${l}-dars</span> <span class="lt-h">${esc(T[l-1][0])}</span> <span class="lt-u">${esc(T[l-1][1])}</span>`:''}
 function showTitle(){$('ltitle').innerHTML=lessonTitle(+cfg.w)}
 
-let cur=null,shown=false,ok=0,bad=0,recent=[],celebrated=false;
-function start(){ok=0;bad=0;recent=[];celebrated=false;next()}
+let cur=null,shown=false,ok=0,bad=0,recent=[],celebrated=false,lastI=-1;
+function start(){ok=0;bad=0;recent=[];celebrated=false;lastI=-1;next()}
 // og'irlik bo'yicha tasodifiy tanlash; yaqinda chiqqan so'zlar takrorlanmaydi
 function pick(){
-  const ix=idxFor(cfg.w);if(!ix.length)return null;
+  const ix=pool(cfg.w);if(!ix.length)return null;
+  if(F.order==='book'){const nx=ix.find(i=>i>lastI);return nx===undefined?ix[0]:nx}
   const nAvoid=Math.min(3,ix.length-1);
   const avoid=new Set(nAvoid>0?recent.slice(-nAvoid):[]);
   let cand=ix.filter(i=>!avoid.has(i));if(!cand.length)cand=ix;
-  let tot=0;const ws=cand.map(i=>{const w=weight(P(i));tot+=w;return w});
+  let tot=0;const ws=cand.map(i=>{const w=F.order==='rand'?1:weight(P(i));tot+=w;return w});
   let r=Math.random()*tot;for(let j=0;j<cand.length;j++){r-=ws[j];if(r<=0)return cand[j]}
   return cand[cand.length-1];
 }
 function next(){
   shown=false;
   const ix=idxFor(cfg.w);
-  const lessonSet=!isNaN(+cfg.w)||cfg.w==='all';
+  const lessonSet=!isNaN(+cfg.w)||cfg.w==='all'||cfg.w==='sel';
   if(!ix.length)return finish('empty');
   if(lessonSet&&!celebrated&&ix.every(i=>P(i)!=null&&P(i)>=PT.learned))return finish('learned');
-  cur=pick();recent.push(cur);if(recent.length>20)recent.shift();
+  if(!pool(cfg.w).length)return finish('filter');
+  cur=pick();lastI=cur;recent.push(cur);if(recent.length>20)recent.shift();
   render();
+  if(F.voice==='new'&&opt.view==='study'&&opt.mode==='hz')speak(W[cur][0]);
 }
 function hzCls(h){return h.length>=6?'hz xxl':h.length>=4?'hz xl':h.length===3?'hz long':'hz'}
 function render(){
@@ -253,9 +310,15 @@ function progress(){
   const learned=ix.filter(i=>P(i)!=null&&P(i)>=PT.learned).length;
   $('left').innerHTML=`Bilish darajasi: <b>${m}%</b> · o'rganilgan ${learned}/${ix.length}`;
   $('score').textContent=`✓ ${ok}  ·  ✗ ${bad}`;
+  const parts=[];
+  if(!['hard','new'].includes(cfg.w)){const off=SETS_UI[0][3].filter(o=>!F[o[0]]).map(o=>o[1].toLowerCase());if(off.length)parts.push('yashirin: '+off.join(', '));if(F.limit)parts.push(`yangi so'zlar ≤ ${F.limit}`)}
+  if(F.star!=='all')parts.push(F.star==='no'?'★ yashirin':'faqat ★');
+  if(F.len!=='all')parts.push(F.len==='3'?'3+ ieroglif':F.len+' ieroglif');
+  $('fbar').style.display=parts.length?'':'none';
+  $('fbarT').textContent=`⚙️ ${parts.join(' · ')} — ${pool(cfg.w).length}/${ix.length} so'z`;
 }
 function les(i){const w=W[i];return `${w[5].includes(',')?w[5]+'-darslarda':w[5]+'-dars'}${w[4]?' · ★ '+B.starShort:''}`}
-function flip(){if(shown||cur==null)return;shown=true;render();if(opt.mode==='uz')speak(W[cur][0])}
+function flip(){if(shown||cur==null)return;shown=true;render();if(F.voice==='show'||F.voice!=='off'&&opt.mode==='uz')speak(W[cur][0])}
 function answer(y){
   if(!shown||cur==null)return;
   const k=wkey(W[cur]);const before=P(cur);
@@ -270,12 +333,14 @@ let tt;function toast(m,good){const e=$('toast');if(!m){e.classList.remove('on')
 function finish(why){
   cur=null;buildSets();progress();
   const learned=why==='learned';
-  const txt=learned?`<div class="big">🎉</div><p>Bu to'plamdagi barcha so'zlar o'rganildi (har biri ${PT.learned}+ ball)!</p>`
+  const txt=why==='filter'?`<div class="big">⚙️</div><p>Sozlamalardagi filtrga mos so'z yo'q.</p>`
+    :learned?`<div class="big">🎉</div><p>Bu to'plamdagi barcha so'zlar o'rganildi (har biri ${PT.learned}+ ball)!</p>`
     :cfg.w==='hard'?`<div class="big">👍</div><p>Manfiy balli so'z qolmadi.</p>`
     :cfg.w==='new'?`<p>Yangi so'z qolmadi — hammasi kamida bir marta ko'rildi.</p>`:`<p>Bu to'plamda so'z yo'q.</p>`;
   $('stage').innerHTML=`<div class="card done" style="cursor:default">${txt}
-    <div>${learned?'<button class="prim" id="cont">Davom etish</button>':''}<button class="prim sec" id="nx">Keyingi dars →</button></div></div>`;
+    <div>${learned&&pool(cfg.w).length?'<button class="prim" id="cont">Davom etish</button>':''}${why==='filter'?'<button class="prim" id="goSet">Sozlamalarni ochish</button>':''}<button class="prim sec" id="nx">Keyingi dars →</button></div></div>`;
   const c=$('cont');if(c)c.onclick=()=>{celebrated=true;next()};
+  const gs=$('goSet');if(gs)gs.onclick=()=>show('setv');
   $('nx').onclick=()=>{const v=isNaN(+cfg.w)||!+cfg.w?1:Math.min(+cfg.w+1,NL);cfg.w=String(v);sel.value=cfg.w;save();showTitle();start()};
 }
 
@@ -325,21 +390,46 @@ $('q').oninput=drawList;
 document.querySelectorAll('[data-f]').forEach(c=>c.onclick=()=>{filt=c.dataset.f;document.querySelectorAll('[data-f]').forEach(x=>x.classList.toggle('on',x===c));drawList()});
 $('reset').onclick=()=>{const b=$('reset');if(b.dataset.c){pts={};lsSet(B.store,{});save();buildSets();drawList();start();b.textContent='Shu kitob ballarini tozalash';delete b.dataset.c}else{b.dataset.c=1;b.textContent='Ishonchingiz komilmi? Yana bosing'}};
 
+// ---- sozlamalar oynasi ----
+function drawSettings(){
+  $('setBody').innerHTML=SETS_UI.map(([k,t,d,os])=>{
+    let ch;
+    if(k==='lessons')ch=T.map((_,j)=>`<span class="chip ls${selL().includes(j+1)?' on':''}" data-k="lessons" data-v="${j+1}">${j+1}</span>`).join('');
+    else ch=os.map(([v,n])=>{const on=Array.isArray(k)?F[v]:F[k]===v;return `<span class="chip${on?' on':''}" data-k="${Array.isArray(k)?'state':k}" data-v="${v}">${esc(n)}</span>`}).join('');
+    return `<div class="grp"><h3>${esc(t)}</h3>${d?`<p>${esc(d)}</p>`:''}<div class="row">${ch}</div></div>`;
+  }).join('');
+  const all=idxFor('all').filter(i=>passF(i)).length;
+  $('fcount').innerHTML=`Filtrga mos: <b>${all}</b> / ${W.length} so'z · ${esc(B.title)}`;
+}
+$('setBody').onclick=e=>{
+  const c=e.target.closest('.chip');if(!c)return;const k=c.dataset.k,v=c.dataset.v;
+  if(k==='state')F[v]=!F[v];
+  else if(k==='lessons'){const n=+v,ls=selL();cfg.ls=(ls.includes(n)?ls.filter(x=>x!==n):[...ls,n]).sort((a,b)=>a-b);
+    if(cfg.ls.length)cfg.w='sel';else if(cfg.w==='sel')cfg.w='1'}
+  else F[k]=typeof FDEF[k]==='number'?+v:v;
+  afterSettings();
+};
+function afterSettings(){applyF();save();buildSets();drawSettings();dirty=true}
+let dirty=false; // sozlama o'zgarsa, Kartalarga qaytganda yangi karta tanlanadi
+$('fReset').onclick=()=>{Object.assign(F,FDEF);afterSettings()};
+
 // ================= TABLAR VA KITOB =================
 function show(v){
   opt.view=v;
-  $('study').style.display=v==='study'?'':'none';$('listv').style.display=v==='listv'?'':'none';
-  $('tStudy').classList.toggle('on',v==='study');$('tList').classList.toggle('on',v==='listv');
-  if(v==='study'){buildSets();if(cur!=null)render();else progress()}
+  for(const [k,t] of [['study','tStudy'],['listv','tList'],['setv','tSet']]){$(k).style.display=k===v?'':'none';$(t).classList.toggle('on',k===v)}
+  if(v==='study'){buildSets();if(dirty){dirty=false;celebrated=false;lastI=-1;next()}else if(cur!=null)render();else progress()}
+  if(v==='setv')drawSettings();
   if(v==='listv')drawList();
   lsSet('hsk1bookopt',opt);
 }
 $('tStudy').onclick=()=>show('study');
 $('tList').onclick=()=>show('listv');
+$('tSet').onclick=()=>show('setv');
+$('fbar').onclick=()=>show('setv');
 $('book').innerHTML=BOOKS.map(b=>`<option value="${b.id}">${esc(b.title)}</option>`).join('');
-$('book').onchange=()=>{loadBook($('book').value);save();buildSets();start();if(opt.view==='listv')drawList();cloudLoad()};
+$('book').onchange=()=>{loadBook($('book').value);save();buildSets();start();if(opt.view==='listv')drawList();if(opt.view==='setv')drawSettings();cloudLoad()};
 
-$('tipK').textContent='+'+PT.known;$('tipD').textContent=String(PT.unknown);$('tipL').textContent=PT.learned;
+applyF();
 if(TG){try{TG.ready();TG.expand();if(TG.disableVerticalSwipes)TG.disableVerticalSwipes();if(TG.colorScheme==='dark')document.documentElement.classList.add('dark')}catch(e){}}
 loadBook(opt.book);chips();buildSets();start();show(opt.view);
 cloudLoad();

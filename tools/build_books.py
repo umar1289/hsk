@@ -22,6 +22,7 @@ BOOKS = [
     dict(id='xin2', title='新HSK教程 2', short='HSK 2', store='hsk_xin2', cloud='p_xin2', keyPy=True,
          star="kitobdagi, lekin HSK 2 darajasidan tashqari so'z", starShort="darajadan tashqari so'z"),
     dict(id='s360_1', title='标准汉语会话360句 1', short='360句 1', store='hsk_s360_1', cloud='p_s360_1', keyPy=True,
+         added=['对|duì', '面包|miànbāo'],  # keyin qo'shilgan so'zlar: eski bulut ma'lumotini o'qish uchun
          star="qo'shimcha so'z (词语扩展 — lug'at kengaytmasi)", starShort="qo'shimcha so'z"),
 ]
 
